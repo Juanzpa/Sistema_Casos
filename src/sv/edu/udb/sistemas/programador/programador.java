@@ -1,4 +1,4 @@
 package sv.edu.udb.sistemas.programador;
 
-public class jefedesarrollo {
+public class programador {
 }
