@@ -5,10 +5,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class JefesDesarrollo extends JFrame {
-    private JPanel pnlJefesAreaFuncional;
+    private JPanel pnlJefesDesarrollo;
     private JTabbedPane tabbedPane1;
     private JLabel lblpa;
-    private JButton cerrarSesionButton;
+    private JButton btnCerrarSesion;
     private JLabel lblCasosAsig;
     private JTable tblCasosAsig;
     private JLabel lblCasosFin;
@@ -19,21 +19,33 @@ public class JefesDesarrollo extends JFrame {
     private JComboBox comboBox1;
     private JComboBox comboBox2;
     private JComboBox comboBox3;
-    private JTextField textField1;
-    private JTextArea textArea1;
-    private JTable table1;
-    private JButton enviarButton;
+    private JTextField txtFecha;
+    private JTextArea txtaDescripcion;
+    private JTable tblProgramador;
+    private JButton btnEnviar;
     private JComboBox comboBox4;
     private JComboBox comboBox5;
-    private JTextField textField2;
-    private JTable table2;
-    private JButton enviarButton1;
+    private JTextField txtProbador;
+    private JTable tblProbador;
+    private JButton btnEnviarProbador;
+    private JLabel lblGestion;
+    private JLabel lblSolicitud;
+    private JLabel lblComentario;
+    private JLabel lblProgramador;
+    private JLabel lblSelectPr;
+    private JLabel lblCasoAsignar;
+    private JLabel lblFechaLimite;
+    private JLabel lblProbasor;
+    private JPanel lblSeleccionProb;
+    private JLabel lblSelectCaso;
+    private JLabel lblFechaSolic;
+    private JComboBox comboBox6;
     DefaultTableModel modelo = null;
 
     public JefesDesarrollo(String title){
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setContentPane(pnlJefesAreaFuncional);
+        this.setContentPane(pnlJefesDesarrollo);
         this.setMinimumSize(new Dimension(600, 500));
         this.setLocationRelativeTo(getParent());
 
@@ -54,4 +66,22 @@ public class JefesDesarrollo extends JFrame {
         frame.setVisible(true);
     }
 
+    private void btnGestionarCasos(){
+        String opcionSeleccionada = (String) comboBox1.getSelectedItem();
+        String opcionSeleccionadad = (String) comboBox6.getSelectedItem();
+
+
+        DefaultTableModel model = (DefaultTableModel) tblGestionCasos.getModel();
+        if (model.getColumnCount() == 0) {
+            model.addColumn("Aceptado");
+            model.addColumn("Rechazado");
+        }
+
+        // Agregar una nueva fila con los datos del formulario
+        model.addRow(new Object[]{opcionSeleccionada, opcionSeleccionadad});
+    }
+
+
 }
+
+
