@@ -52,7 +52,7 @@ public class JefesDesarrollo extends JFrame {
         setTitle("Panel de Jefe de Desarrollo");
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setContentPane(pnlJefesDesarrollo);
-        this.setMinimumSize(new Dimension(600, 500));
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
 
         Object[][] data = null;
