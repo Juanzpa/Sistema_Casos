@@ -1,4 +1,4 @@
-package sv.edu.udb.sistemas.JefeAreaFuncional;
+package sv.edu.udb.sistemas.JefesDesarrollo;
 
 public class Caso {
 
