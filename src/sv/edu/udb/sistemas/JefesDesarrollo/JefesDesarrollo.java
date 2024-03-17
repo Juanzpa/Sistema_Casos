@@ -74,7 +74,7 @@ public class JefesDesarrollo extends JFrame {
             }
         });
 
-        setVisible(true);
+
         btnGestionarCasos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -101,6 +101,7 @@ public class JefesDesarrollo extends JFrame {
     public static void main(String[] args) {
       JefesDesarrollo jefesDesarrollo = new JefesDesarrollo(null);
 
+      jefesDesarrollo.setVisible(true);
     }
 
 
