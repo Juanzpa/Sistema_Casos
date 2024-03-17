@@ -1,8 +1,12 @@
 package sv.edu.udb.sistemas.JefesDesarrollo;
 
+import com.mysql.cj.log.NullLogger;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class JefesDesarrollo extends JFrame {
     private JPanel pnlJefesDesarrollo;
@@ -40,16 +44,18 @@ public class JefesDesarrollo extends JFrame {
     private JLabel lblSelectCaso;
     private JLabel lblFechaSolic;
     private JComboBox comboBox6;
+    private JPanel JpanelCasos;
     DefaultTableModel modelo = null;
 
-    public JefesDesarrollo(String title){
+    public JefesDesarrollo(String title) {
         super(title);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Panel de Jefe de Desarrollo");
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.setContentPane(pnlJefesDesarrollo);
         this.setMinimumSize(new Dimension(600, 500));
         this.setLocationRelativeTo(getParent());
 
-        Object [][] data=null;
+        Object[][] data = null;
 
         String[] columns = {
                 "IdCaso", "Titulo", "Descripcion", "Fecha Solicitud", "Fecha Limite", "Estado"
@@ -59,27 +65,45 @@ public class JefesDesarrollo extends JFrame {
 
         tblCasosAsig.setModel(modelo);
 
+
+        btnAbrirCasos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                tabbedPane1.setSelectedIndex(1);
+            }
+        });
+
+        setVisible(true);
+        btnGestionarCasos.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPane1.setSelectedIndex(0);
+            }
+        });
+        btnEnviar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        btnEnviarProbador.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
     }
+
+
+
 
     public static void main(String[] args) {
-        JFrame frame = new JefesDesarrollo("Panel de Jefe de Desarrollo");
-        frame.setVisible(true);
+      JefesDesarrollo jefesDesarrollo = new JefesDesarrollo(null);
+
     }
 
-    private void btnGestionarCasos(){
-        String opcionSeleccionada = (String) comboBox1.getSelectedItem();
-        String opcionSeleccionadad = (String) comboBox6.getSelectedItem();
 
-
-        DefaultTableModel model = (DefaultTableModel) tblGestionCasos.getModel();
-        if (model.getColumnCount() == 0) {
-            model.addColumn("Aceptado");
-            model.addColumn("Rechazado");
-        }
-
-        // Agregar una nueva fila con los datos del formulario
-        model.addRow(new Object[]{opcionSeleccionada, opcionSeleccionadad});
-    }
 
 
 }

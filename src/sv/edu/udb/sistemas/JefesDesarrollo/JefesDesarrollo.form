@@ -92,7 +92,7 @@
               </component>
             </children>
           </grid>
-          <grid id="24ce7" layout-manager="GridLayoutManager" row-count="6" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="24ce7" binding="JpanelCasos" layout-manager="GridLayoutManager" row-count="6" column-count="4" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <tabbedpane title="Gestionar Casos"/>
@@ -325,14 +325,6 @@
                 </constraints>
                 <properties/>
               </component>
-              <component id="319f1" class="javax.swing.JTable" binding="tblProbador">
-                <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                    <preferred-size width="150" height="50"/>
-                  </grid>
-                </constraints>
-                <properties/>
-              </component>
               <component id="949c5" class="javax.swing.JButton" binding="btnEnviarProbador">
                 <constraints>
                   <grid row="4" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -340,6 +332,14 @@
                 <properties>
                   <text value="Enviar"/>
                 </properties>
+              </component>
+              <component id="319f1" class="javax.swing.JTable" binding="tblProbador">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                </constraints>
+                <properties/>
               </component>
             </children>
           </grid>
