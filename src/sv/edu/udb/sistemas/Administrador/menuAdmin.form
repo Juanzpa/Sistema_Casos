@@ -226,7 +226,7 @@
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Nombres"/>
+                  <text value="Nombre"/>
                 </properties>
               </component>
               <component id="9fb01" class="javax.swing.JTextField" binding="textField1" default-binding="true">
@@ -242,7 +242,7 @@
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Apellidos"/>
+                  <text value="Apellido"/>
                 </properties>
               </component>
               <component id="2c9d6" class="javax.swing.JTextField" binding="textField2" default-binding="true">
