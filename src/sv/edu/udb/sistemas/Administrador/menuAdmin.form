@@ -371,14 +371,6 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="92a6a" class="javax.swing.JButton" binding="btnEditarJefeAf">
-                <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <text value="Editar"/>
-                </properties>
-              </component>
               <component id="51737" class="javax.swing.JButton" binding="btnBorrarJefeAf">
                 <constraints>
                   <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -421,14 +413,19 @@
                       <text value="PANEL DE JEFE AREA FUNCIONAL"/>
                     </properties>
                   </component>
-                  <component id="c2bf6" class="javax.swing.JTable" binding="table1" default-binding="true">
+                  <scrollpane id="25a74">
                     <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
-                        <preferred-size width="150" height="50"/>
-                      </grid>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties/>
-                  </component>
+                    <border type="none"/>
+                    <children>
+                      <component id="e049d" class="javax.swing.JTable" binding="tblJefeAf">
+                        <constraints/>
+                        <properties/>
+                      </component>
+                    </children>
+                  </scrollpane>
                 </children>
               </grid>
             </children>
