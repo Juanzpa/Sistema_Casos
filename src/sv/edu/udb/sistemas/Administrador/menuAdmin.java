@@ -4,11 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class menuAdmin extends JFrame {
-    private JButton jefeDeDesarrolloButton;
-    private JButton empleadosDeLasÁreasButton;
-    private JButton jefesDeÁreasFuncionalesButton;
-    private JButton programadoresButton;
     private JPanel pnlmenuadmin;
+    private JTabbedPane tabbedPane1;
 
     public menuAdmin(String title) {
         super(title);
