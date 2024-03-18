@@ -39,6 +39,9 @@ public class menuAdmin extends JFrame {
     private JButton programadorButton;
     private JLabel lblJA;
     private JPanel lblJA1;
+    private JButton btnAgregarProg;
+    private JButton btnEditarProg;
+    private JButton btnEliminarProg;
     DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF = null;
     String[] columnaProgramadores, columnaEmpleado, columnaAF;
     Object[][] datosProgramador, datosEmpleado, datosAF;
