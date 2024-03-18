@@ -6,6 +6,7 @@ import java.awt.*;
 
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
+
     private JTabbedPane tabbedPaneAdmin;
     private JLabel lblTituloProgramador;
     private JTable tblProgramadores;
@@ -42,12 +43,19 @@ public class menuAdmin extends JFrame {
     String[] columnaProgramadores, columnaEmpleado, columnaAF;
     Object[][] datosProgramador, datosEmpleado, datosAF;
 
+    private JTabbedPane tabbedPane1;
+    private JLabel lblAreaFuncional;
+    private JPanel lblPanelAreaFuncional;
+    private JScrollPane tblAF;
+
+
     public menuAdmin(String title) {
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(pnlmenuadmin);
         this.setMinimumSize(new Dimension(800, 600));
         this.setLocationRelativeTo(getParent());
+
 
         // Tabla Empleado
         columnaEmpleado = new String[] {"Nombre", "Apellido", "Usuario", "Clave", "Departamento", "Cargo"};
@@ -56,19 +64,18 @@ public class menuAdmin extends JFrame {
         tblEmpl.setModel(modelEmpleado);
 
         // Tabla Programadores
+
         columnaProgramadores = new String[] {"Nombre", "Apellido", "Cargo"};
         datosProgramador = new Object[][] {};
         modeloPogramadores = new DefaultTableModel(datosProgramador, columnaProgramadores);
         tblProgramadores.setModel(modeloPogramadores);
+
 
         //JefeAreaFuncional
         columnaAF = new String[] {"Id", "Nombre de Caso", "Descripcion de Caso", "Porcentaje de progreso"};
         datosAF = new Object[][] {};
         modeloAF = new DefaultTableModel(datosAF, columnaAF);
         tblJefeAf.setModel(modeloAF);
-
-
-
     }
     public static void main(String[] args) {
         JFrame frama = new menuAdmin("menuAdmin");
