@@ -387,7 +387,7 @@
                   <text value="Borrar"/>
                 </properties>
               </component>
-              <grid id="8b9c5" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+              <grid id="8b9c5" binding="lblJA1" layout-manager="GridLayoutManager" row-count="3" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
                 <margin top="0" left="0" bottom="0" right="0"/>
                 <constraints>
                   <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -395,7 +395,7 @@
                 <properties/>
                 <border type="none"/>
                 <children>
-                  <component id="1e8c5" class="javax.swing.JLabel">
+                  <component id="1e8c5" class="javax.swing.JLabel" binding="lblJA">
                     <constraints>
                       <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                     </constraints>
@@ -413,27 +413,6 @@
                       <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
                     </constraints>
                   </vspacer>
-                  <scrollpane id="7ca95" binding="Tabla1">
-                    <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <horizontalScrollBarPolicy value="30"/>
-                      <verticalScrollBarPolicy value="20"/>
-                    </properties>
-                    <border type="none"/>
-                    <children>
-                      <component id="f4559" class="javax.swing.JTable" binding="tblJefeAf">
-                        <constraints/>
-                        <properties>
-                          <fillsViewportHeight value="false"/>
-                          <name value="&#10;"/>
-                          <nextFocusableComponent value="f4559"/>
-                          <toolTipText value=""/>
-                        </properties>
-                      </component>
-                    </children>
-                  </scrollpane>
                   <component id="710e" class="javax.swing.JLabel">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -441,6 +420,14 @@
                     <properties>
                       <text value="PANEL DE JEFE AREA FUNCIONAL"/>
                     </properties>
+                  </component>
+                  <component id="c2bf6" class="javax.swing.JTable" binding="table1" default-binding="true">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                        <preferred-size width="150" height="50"/>
+                      </grid>
+                    </constraints>
+                    <properties/>
                   </component>
                 </children>
               </grid>

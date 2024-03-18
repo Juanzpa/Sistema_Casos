@@ -23,8 +23,6 @@ public class menuAdmin extends JFrame {
 
     private JButton btnBorrarJefeAf;
 
-    private JScrollPane Tabla1;
-
     private JTable tblJefeAf;
     private JTable tblEmpl;
     private JLabel lbltittleEmpl;
@@ -40,9 +38,12 @@ public class menuAdmin extends JFrame {
     private JButton jefeDesarrolloButton;
     private JButton jefeAreaFuncionalButton;
     private JButton programadorButton;
-    DefaultTableModel modelEmpleado, modeloPogramadores = null;
-    String[] columnaProgramadores, columnaEmpleado;
-    Object[][] datosProgramador, datosEmpleado;
+    private JLabel lblJA;
+    private JPanel lblJA1;
+    private JTable table1;
+    DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF = null;
+    String[] columnaProgramadores, columnaEmpleado, columnaAF;
+    Object[][] datosProgramador, datosEmpleado, datosAF;
 
     public menuAdmin(String title) {
         super(title);
@@ -62,6 +63,8 @@ public class menuAdmin extends JFrame {
         datosProgramador = new Object[][] {};
         modeloPogramadores = new DefaultTableModel(datosProgramador, columnaProgramadores);
         tblProgramadores.setModel(modeloPogramadores);
+
+
 
 
 
