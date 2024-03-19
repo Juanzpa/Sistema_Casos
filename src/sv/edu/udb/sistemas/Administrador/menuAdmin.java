@@ -50,9 +50,14 @@ public class menuAdmin extends JFrame {
     private JButton btnEditar;
     private JButton btnBorrar;
     private JButton btnCerrarSesionRol;
-    DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF, modeloDepartamento = null;
-    String[] columnaProgramadores, columnaEmpleado, columnaAF, columnaDepartamento;
-    Object[][] datosProgramador, datosEmpleado, datosAF, datosDepartamento;
+    private JLabel lblTituloJefeDesarrollo;
+    private JTable tblJefeDesarrollo;
+    private JButton btnAgregarJefeDesarrollo;
+    private JButton btnEditarJefeDesarrollo;
+    private JButton btnEliminarJefeDesarrollo;
+    DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
+    String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
+    Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
 
     private JTabbedPane tabbedPane1;
     private JLabel lblAreaFuncional;
@@ -80,11 +85,16 @@ public class menuAdmin extends JFrame {
         tblEmpl.setModel(modelEmpleado);
 
         // Tabla Programadores
-
-        columnaProgramadores = new String[] {"Nombre", "Apellido", "Cargo"};
+        columnaProgramadores = new String[] {"ID", "Nombre", "Apellido", "Clave","Cargo"};
         datosProgramador = new Object[][] {};
         modeloPogramadores = new DefaultTableModel(datosProgramador, columnaProgramadores);
         tblProgramadores.setModel(modeloPogramadores);
+
+        // Tabla Jefe de Desarrollo
+        columnaJefeDesarrollo = new String[] {"ID", "Nombre", "Apellido", "Clave", "Cargo"};
+        datosJefeDesarrollo = new Object[][] {};
+        modeloJefeDesarrollo = new DefaultTableModel(datosJefeDesarrollo, columnaJefeDesarrollo);
+        tblJefeDesarrollo.setModel(modeloJefeDesarrollo);
 
 
         //JefeAreaFuncional
