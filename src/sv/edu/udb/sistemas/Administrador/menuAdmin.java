@@ -1,7 +1,6 @@
 package sv.edu.udb.sistemas.Administrador;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.table.DefaultTableModel;
 
 //
@@ -38,11 +37,11 @@ public class menuAdmin extends JFrame {
     private JLabel lblDepartamentoEmpl;
     private JLabel lblCargoEmpl;
     private JLabel lbltitleWelcome;
-    private JButton departamentoButton;
-    private JButton empleadoButton;
-    private JButton jefeDesarrolloButton;
+    private JButton btnDepartamento;
+    private JButton btnEmpleado;
+    private JButton btnDesarrollo;
     private JButton jefeAreaFuncionalButton;
-    private JButton programadorButton;
+    private JButton btnProgramador;
     private JLabel lblJA;
     private JPanel lblJA1;
     private JButton btnAgregarProg;
@@ -118,7 +117,7 @@ public class menuAdmin extends JFrame {
 
         // redirecccion departamento
 
-        departamentoButton.addActionListener(new ActionListener() {
+        btnDepartamento.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPaneAdmin.setSelectedIndex(1); // Índice de la pestaña "Departamento"
@@ -127,7 +126,7 @@ public class menuAdmin extends JFrame {
 
         // redirecccion empleado
 
-        empleadoButton.addActionListener(new ActionListener() {
+        btnEmpleado.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPaneAdmin.setSelectedIndex(2); // Índice de la pestaña "Departamento"
@@ -136,7 +135,7 @@ public class menuAdmin extends JFrame {
 
         // redirecccion jefeAreaDesarrollo
 
-        jefeDesarrolloButton.addActionListener(new ActionListener() {
+        btnDesarrollo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPaneAdmin.setSelectedIndex(3); // Índice de la pestaña "Departamento"
@@ -154,7 +153,7 @@ public class menuAdmin extends JFrame {
 
         // redirecccion programadorButton
 
-        programadorButton.addActionListener(new ActionListener() {
+        btnProgramador.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tabbedPaneAdmin.setSelectedIndex(5); // Índice de la pestaña "Departamento"
@@ -162,11 +161,12 @@ public class menuAdmin extends JFrame {
         });
 
 
+        // Logica para la parte de los departamentos
 
 
     }
     public static void main(String[] args) {
-        JFrame frama = new menuAdmin("menuAdmin");
+        JFrame frama = new menuAdmin("Panel del Administrador");
     frama.setVisible(true);
     }
 }
