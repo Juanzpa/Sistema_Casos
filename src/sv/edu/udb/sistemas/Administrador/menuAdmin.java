@@ -48,9 +48,22 @@ public class menuAdmin extends JFrame {
     private JButton btnAgregarProg;
     private JButton btnEditarProg;
     private JButton btnEliminarProg;
-    DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF = null;
-    String[] columnaProgramadores, columnaEmpleado, columnaAF;
-    Object[][] datosProgramador, datosEmpleado, datosAF;
+    private JLabel lblDepartamento;
+    private JTextField txtDepartamentoNomb;
+    private JTextField txtDepartamentoSec;
+    private JTable tblDepartamento;
+    private JScrollPane JScrollPane;
+    private JButton btnEditar;
+    private JButton btnBorrar;
+    private JButton btnCerrarSesionRol;
+    private JLabel lblTituloJefeDesarrollo;
+    private JTable tblJefeDesarrollo;
+    private JButton btnAgregarJefeDesarrollo;
+    private JButton btnEditarJefeDesarrollo;
+    private JButton btnEliminarJefeDesarrollo;
+    DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
+    String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
+    Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
 
     private JTabbedPane tabbedPane1;
     private JLabel lblAreaFuncional;
@@ -70,6 +83,11 @@ public class menuAdmin extends JFrame {
         this.setMinimumSize(new Dimension(800, 600));
         this.setLocationRelativeTo(getParent());
 
+        // Tabla Departamento
+        columnaDepartamento = new String[] {"Nombre","Seccion"};
+        datosDepartamento = new Object[][] {};
+        modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
+        tblDepartamento.setModel(modeloDepartamento);
 
         // Tabla Empleado
         columnaEmpleado = new String[] {"Nombre", "Apellido", "Usuario", "Clave", "Departamento", "Cargo"};
@@ -78,11 +96,16 @@ public class menuAdmin extends JFrame {
         tblEmpl.setModel(modelEmpleado);
 
         // Tabla Programadores
-
-        columnaProgramadores = new String[] {"Nombre", "Apellido", "Cargo"};
+        columnaProgramadores = new String[] {"ID", "Nombre", "Apellido", "Clave","Cargo"};
         datosProgramador = new Object[][] {};
         modeloPogramadores = new DefaultTableModel(datosProgramador, columnaProgramadores);
         tblProgramadores.setModel(modeloPogramadores);
+
+        // Tabla Jefe de Desarrollo
+        columnaJefeDesarrollo = new String[] {"ID", "Nombre", "Apellido", "Clave", "Cargo"};
+        datosJefeDesarrollo = new Object[][] {};
+        modeloJefeDesarrollo = new DefaultTableModel(datosJefeDesarrollo, columnaJefeDesarrollo);
+        tblJefeDesarrollo.setModel(modeloJefeDesarrollo);
 
 
         //JefeAreaFuncional
