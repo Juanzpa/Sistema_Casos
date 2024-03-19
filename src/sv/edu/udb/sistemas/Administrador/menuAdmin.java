@@ -42,9 +42,17 @@ public class menuAdmin extends JFrame {
     private JButton btnAgregarProg;
     private JButton btnEditarProg;
     private JButton btnEliminarProg;
-    DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF = null;
-    String[] columnaProgramadores, columnaEmpleado, columnaAF;
-    Object[][] datosProgramador, datosEmpleado, datosAF;
+    private JLabel lblDepartamento;
+    private JTextField txtDepartamentoNomb;
+    private JTextField txtDepartamentoSec;
+    private JTable tblDepartamento;
+    private JScrollPane JScrollPane;
+    private JButton btnEditar;
+    private JButton btnBorrar;
+    private JButton btnCerrarSesionRol;
+    DefaultTableModel modelEmpleado, modeloPogramadores, modeloAF, modeloDepartamento = null;
+    String[] columnaProgramadores, columnaEmpleado, columnaAF, columnaDepartamento;
+    Object[][] datosProgramador, datosEmpleado, datosAF, datosDepartamento;
 
     private JTabbedPane tabbedPane1;
     private JLabel lblAreaFuncional;
@@ -59,6 +67,11 @@ public class menuAdmin extends JFrame {
         this.setMinimumSize(new Dimension(800, 600));
         this.setLocationRelativeTo(getParent());
 
+        // Tabla Departamento
+        columnaDepartamento = new String[] {"Nombre","Seccion"};
+        datosDepartamento = new Object[][] {};
+        modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
+        tblDepartamento.setModel(modeloDepartamento);
 
         // Tabla Empleado
         columnaEmpleado = new String[] {"Nombre", "Apellido", "Usuario", "Clave", "Departamento", "Cargo"};
