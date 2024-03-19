@@ -1,8 +1,14 @@
 package sv.edu.udb.sistemas.Administrador;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.*;
+import javax.swing.table.DefaultTableModel;
+
+//
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
@@ -51,6 +57,11 @@ public class menuAdmin extends JFrame {
     private JPanel lblPanelAreaFuncional;
     private JScrollPane tblAF;
 
+    //
+
+
+    //
+
 
     public menuAdmin(String title) {
         super(title);
@@ -79,6 +90,57 @@ public class menuAdmin extends JFrame {
         datosAF = new Object[][] {};
         modeloAF = new DefaultTableModel(datosAF, columnaAF);
         tblJefeAf.setModel(modeloAF);
+
+
+
+        // redirecccion departamento
+
+        departamentoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPaneAdmin.setSelectedIndex(1); // Índice de la pestaña "Departamento"
+            }
+        });
+
+        // redirecccion empleado
+
+        empleadoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPaneAdmin.setSelectedIndex(2); // Índice de la pestaña "Departamento"
+            }
+        });
+
+        // redirecccion jefeAreaDesarrollo
+
+        jefeDesarrolloButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPaneAdmin.setSelectedIndex(3); // Índice de la pestaña "Departamento"
+            }
+        });
+
+        // redirecccion jefeAreaFuncionalButton
+
+        jefeAreaFuncionalButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPaneAdmin.setSelectedIndex(4); // Índice de la pestaña "Departamento"
+            }
+        });
+
+        // redirecccion programadorButton
+
+        programadorButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tabbedPaneAdmin.setSelectedIndex(5); // Índice de la pestaña "Departamento"
+            }
+        });
+
+
+
+
     }
     public static void main(String[] args) {
         JFrame frama = new menuAdmin("menuAdmin");
