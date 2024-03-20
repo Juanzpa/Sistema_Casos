@@ -7,7 +7,7 @@ public class Conexion {
     private static String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
     //El puerto es opcional
     private static String JDBC_URL =
-            "jdbc:mysql://localhost:3308/sistema_caso";
+            "jdbc:mysql://localhost:3306/sistema_casos";
     private static String JDBC_USER = "root";
     private static String JDBC_PASS = "";
     private static Driver driver = null;
