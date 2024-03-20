@@ -65,6 +65,14 @@ public class menuAdmin extends JFrame {
     private JButton btnAgregarJefeDesarrollo;
     private JButton btnEditarJefeDesarrollo;
     private JButton btnEliminarJefeDesarrollo;
+
+    private JButton btnBorrarDep;
+
+    private JButton btnEditarDep;
+
+    private JLabel lblDepartamentoId;
+
+    private JTextField txtDepartamentoId;
     DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
     String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
     Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
@@ -75,7 +83,7 @@ public class menuAdmin extends JFrame {
     private JPanel lblPanelAreaFuncional;
     private JScrollPane tblAF;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/sistema_casos";
+    private static final String URL = "jdbc:mysql://localhost:3306/sistema_caso";
     private static final String USER = "root";
     private static final String PASSWORD = "";
     private Connection connection;
