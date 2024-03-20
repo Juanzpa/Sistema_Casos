@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Login1 extends JFrame {
+public class Login extends JFrame {
     private JButton btnIngresaL;
     private JPanel pnlLogin;
     private JLabel lblLogin;
@@ -21,7 +21,7 @@ public class Login1 extends JFrame {
     private JLabel lblIcono;
 
 
-    public Login1(String title){
+    public Login(String title){
         super(title);
         setTitle("Panel de Jefe de Desarrollo");
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -36,6 +36,8 @@ public class Login1 extends JFrame {
 
 
                 try {
+
+                    
                     Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3326/sistema_caso", "root", "");
 
                     String sql = "SELECT * FROM empleados WHERE NombreUsuario = ? AND Contrasenia = ?";
@@ -51,7 +53,7 @@ public class Login1 extends JFrame {
 
                         switch (idCargo) {
                             case 1:
-
+                                JOptionPane.showMessageDialog(null, "Caso 1: Eres Admin");
                                 break;
                             case 2:
                                 JOptionPane.showMessageDialog(null, "Caso 2: Eres Jefe Funcional");
@@ -85,7 +87,7 @@ public class Login1 extends JFrame {
     }
 
     public static void main(String[] args){
-        Login1 login = new Login1(null);
+        Login login = new Login(null);
 
         login.setVisible(true);
     }
