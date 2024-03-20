@@ -24,7 +24,7 @@ public class Login extends JFrame {
         setContentPane(pnlLogin);
         setSize(400, 300);
         setLocationRelativeTo(null);
-
+//as
         btnIngresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
