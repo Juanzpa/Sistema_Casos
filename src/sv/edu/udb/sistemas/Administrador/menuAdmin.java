@@ -1,6 +1,8 @@
 package sv.edu.udb.sistemas.Administrador;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 //
@@ -183,7 +185,7 @@ public class menuAdmin extends JFrame {
         }
 
 
-        // Logica para la parte de los departamentos
+        /* PANEL DEPARTAMENTOS */
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
@@ -212,6 +214,93 @@ public class menuAdmin extends JFrame {
                 }
             }
         }
+
+        tblDepartamento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(!e.getValueIsAdjusting()){
+                    int selectedRow = tblDepartamento.getSelectedRow();
+                    if (selectedRow != -1) { // Verificar si se ha seleccionado una fila
+                        String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
+                        String nombreDepartamento = tblDepartamento.getValueAt(selectedRow, 1).toString();
+                        String seccion = tblDepartamento.getValueAt(selectedRow, 2).toString();
+
+                        // Establecer los valores en las cajas de texto
+                        txtDepartamentoId.setText(id);
+                        txtDepartamentoNomb.setText(nombreDepartamento);
+                        txtDepartamentoSec.setText(seccion);
+                    }
+                }
+            }
+
+        });
+
+        // Editar el departamento
+        btnEditarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int selectedRow = tblDepartamento.getSelectedRow();
+                if (selectedRow == -1) {
+                    // Si no se ha seleccionado ninguna fila
+                    JOptionPane.showMessageDialog(null, "Seleccione un departamento para editar", "Error", JOptionPane.ERROR_MESSAGE);
+                    return; // Salir del método porque no hay nada que editar
+                }
+
+                String id = txtDepartamentoId.getText();
+                String nombre = txtDepartamentoNomb.getText();
+                String seccion = txtDepartamentoSec.getText();
+
+                // Validar que los campos no estén vacíos
+                if (nombre.isEmpty() || seccion.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos deben estar llenos", "Error", JOptionPane.ERROR_MESSAGE);
+                    return; // Salir del método porque falta información
+                }
+
+                // Actualizar fila seleccionada en la tabla
+                tblDepartamento.setValueAt(id, selectedRow, 0);
+                tblDepartamento.setValueAt(nombre, selectedRow, 1);
+                tblDepartamento.setValueAt(seccion, selectedRow, 2);
+
+                // Query para actualizar la BD
+                String updateQuery = "UPDATE departamentos SET NombreDepartamento = '" + nombre + "', Seccion = '" + seccion + "' WHERE Id = " + id;
+                executeUpdateQuery(updateQuery);
+
+                JOptionPane.showMessageDialog(null, "Departamento actualizado exitosamente");
+            }
+        });
+
+        // Borrar Departamento
+        btnBorrarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tblDepartamento.getSelectedRow();
+                if(selectedRow == -1){
+                    JOptionPane.showMessageDialog(null,"Seleccione un departamento para eliminar");
+                    return;
+                }
+
+                String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
+                int confirmacion = JOptionPane.showConfirmDialog(null,"¿Desea eliminar el departamento ?","Confirm",JOptionPane.YES_NO_CANCEL_OPTION);
+                if(confirmacion != JOptionPane.YES_OPTION){
+                    return;
+                }
+
+                String deleteQuery = "DELETE FROM departamentos WHERE Id = " + id;
+                executeUpdateQuery(deleteQuery);
+
+                DefaultTableModel modelo = (DefaultTableModel) tblDepartamento.getModel();
+                modelo.removeRow(selectedRow);
+
+                JOptionPane.showMessageDialog(null,"Departamento eliminado exitosamente");
+
+
+            }
+        });
+
+        /* Termina lógica departamentos */
+
+
     }
 
 
@@ -224,6 +313,16 @@ public class menuAdmin extends JFrame {
             } catch (SQLException e) {
                 System.err.println("Error al cerrar la conexión: " + e.getMessage());
             }
+        }
+    }
+
+
+    private void executeUpdateQuery(String query) {
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(query);
+        } catch (SQLException ex) {
+            System.err.println("Error al ejecutar la consulta de actualización: " + ex.getMessage());
         }
     }
     public static void main(String[] args) {
