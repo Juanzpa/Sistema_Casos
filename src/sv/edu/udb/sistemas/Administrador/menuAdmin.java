@@ -7,8 +7,14 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
 
@@ -52,7 +58,7 @@ public class menuAdmin extends JFrame {
     private JTextField txtDepartamentoSec;
     private JTable tblDepartamento;
     private JScrollPane JScrollPane;
-    private JButton btnEditar;
+    private JButton btnEditarDep;
     private JButton btnBorrar;
     private JButton btnCerrarSesionRol;
     private JLabel lblTituloJefeDesarrollo;
@@ -60,6 +66,8 @@ public class menuAdmin extends JFrame {
     private JButton btnAgregarJefeDesarrollo;
     private JButton btnEditarJefeDesarrollo;
     private JButton btnEliminarJefeDesarrollo;
+    private JTextField txtDepartamentoId;
+    private JLabel lblId;
     DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
     String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
     Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
@@ -69,11 +77,12 @@ public class menuAdmin extends JFrame {
     private JPanel lblPanelAreaFuncional;
     private JScrollPane tblAF;
 
-    //
+    private static final String URL = "jdbc:mysql://localhost:3306/sistema_casos";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+    private Connection connection;
 
-
-    //
-
+    private DefaultTableModel tableModel;
 
     public menuAdmin(String title) {
         super(title);
@@ -83,10 +92,11 @@ public class menuAdmin extends JFrame {
         this.setLocationRelativeTo(getParent());
 
         // Tabla Departamento
-        columnaDepartamento = new String[] {"Nombre","Seccion"};
+        columnaDepartamento = new String[] {"ID","Nombre","Seccion"};
         datosDepartamento = new Object[][] {};
-        modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
+        //modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
         tblDepartamento.setModel(modeloDepartamento);
+        modeloDepartamento = (datosDepartamento.selectDepartamentos())
 
         // Tabla Empleado
         columnaEmpleado = new String[] {"Nombre", "Apellido", "Usuario", "Clave", "Departamento", "Cargo"};
@@ -113,7 +123,15 @@ public class menuAdmin extends JFrame {
         modeloAF = new DefaultTableModel(datosAF, columnaAF);
         tblJefeAf.setModel(modeloAF);
 
+        tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Seccion"}, 0);
+        tblDepartamento.setModel(tableModel);
 
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Conexión exitosa");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        }
 
         // redirecccion departamento
 
@@ -160,11 +178,109 @@ public class menuAdmin extends JFrame {
             }
         });
 
-
         // Logica para la parte de los departamentos
+        tblDepartamento = new JTable(tableModel);
+        Connection connection = null;
+        try{
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_casos","root","");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
+
+            while (resultSet.next()){
+                String id = resultSet.getString("id");
+                String nombreDepartamento = resultSet.getString("NombreDepartamento");
+                String seccion = resultSet.getString("Seccion");
+                tableModel.addRow(new String[]{id, nombreDepartamento, seccion});
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(connection != null){
+                try{
+                    connection.close();
+                } catch (SQLException e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        btnEditarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Obtener los datos ingresados por el admin
+                String nombreDepartamento = txtDepartamentoNomb.getText();
+                String seccion = txtDepartamentoSec.getText();
+
+                // Obtener la fila seleccionada en la tabla
+                int filaSeleccionada = tblDepartamento.getSelectedRow();
+                if (filaSeleccionada == -1) {
+                    JOptionPane.showMessageDialog(null, "Por favor, seleccione un departamento para editar.");
+                    return; // Salir del método si no se selecciona ninguna fila
+                }
+
+                // Obtener el ID del departamento seleccionado
+                String idDepartamento = tblDepartamento.getValueAt(filaSeleccionada, 0).toString();
+
+                // Actualizar los datos en la tabla de la aplicación
+                tblDepartamento.setValueAt(idDepartamento,filaSeleccionada,0);
+                tblDepartamento.setValueAt(nombreDepartamento, filaSeleccionada, 1); // Actualizar el nombre
+                tblDepartamento.setValueAt(seccion, filaSeleccionada, 2); // Actualizar la sección
+
+                // Actualizar los datos en la base de datos
+                try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+                    String query = "UPDATE departamentos SET NombreDepartamento = ?, Seccion = ? WHERE id = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(query)) {
+                        statement.setString(1, nombreDepartamento);
+                        statement.setString(2, seccion);
+                        statement.setString(3, idDepartamento);
+                        int filasActualizadas = statement.executeUpdate();
+                        if (filasActualizadas > 0) {
+                            JOptionPane.showMessageDialog(null, "Departamento actualizado correctamente.");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se pudo actualizar el departamento.");
+                        }
+                    }
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error al actualizar el departamento: " + ex.getMessage());
+                }
+            }
+        });
 
 
+        tblDepartamento.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                tblObtenerDatos(e);
+            }
+        });
     }
+
+    public void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Conexión cerrada");
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar la conexión: " + e.getMessage());
+            }
+        }
+    }
+
+
+    private void tblObtenerDatos(MouseEvent e) {
+        int fila = tblDepartamento.rowAtPoint(e.getPoint());
+        int columna = tblDepartamento.columnAtPoint(e.getPoint());
+
+        if ((fila > -1) && (columna > -1)) {
+            txtDepartamentoId.setText(modeloDepartamento.getValueAt(fila,0).toString());
+            txtDepartamentoNomb.setText(modeloDepartamento.getValueAt(fila, 1).toString());
+            txtDepartamentoSec.setText(modeloDepartamento.getValueAt(fila, 2).toString());
+        }
+    }
+
     public static void main(String[] args) {
         JFrame frama = new menuAdmin("Panel del Administrador");
     frama.setVisible(true);
