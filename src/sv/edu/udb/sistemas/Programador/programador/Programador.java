@@ -30,7 +30,6 @@ public class Programador extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Casos_Programador casos = new Casos_Programador(tituloCaso, descripcionCaso, fechaLimite, Programador.this);
-
             }
         });
 
@@ -49,10 +48,11 @@ public class Programador extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Programador programmer = new Programador("Obama");
+                Programador programmer = new Programador("Programador");
                 programmer.agregarCaso("caso 1", "descripcion del caso 1", "12-12-2024");
                 programmer.agregarCaso("caso 2cferxewrx ewxzewxfefx ewzfefxerxr", "descripcion del segundo", "12-12-2014");
                 programmer.agregarCaso("caso 1 rcgtrxgertxgrtrcx", "la gran descripcion del tercero", "12-12-2025");
+
             }
         });
     }

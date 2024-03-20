@@ -25,7 +25,7 @@ public class Casos_Programador extends JFrame {
         this.setVisible(true);
 
         lblTitulo.setText("Caso: " + tituloCaso);
-        lblDescripcion.setText("Descripcio0n: " + descripcionCaso);
+        lblDescripcion.setText("Descripcion: " + descripcionCaso);
         lblFechaLimite.setText("Fecha Limite: " + fechaLimiteCaso);
 
 
