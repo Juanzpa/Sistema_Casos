@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Bitacora extends JFrame {
@@ -21,10 +22,14 @@ public class Bitacora extends JFrame {
     private JTextField txtProgresoBitacora;
     private JLabel lblBitacora2;
 
-    public Bitacora(){
+    private String idCaso;
+
+    public Bitacora(String IdCaso) {
+        this.idCaso = IdCaso;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(pnlBitacora);
         this.setMinimumSize(new Dimension(800, 600));
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
 
@@ -35,24 +40,7 @@ public class Bitacora extends JFrame {
             }
         });
 
-        btnActualizar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Bitacora.this, "Bitácora actualizada correctamente.");
-                setProgress();
-            }
-        });
-
-        btnFinalizar.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (pgbBitacora.getValue() < 100) {
-                    JOptionPane.showMessageDialog(Bitacora.this, "No puedes finalizar el proyecto aún");
-                } else {
-                    JOptionPane.showMessageDialog(Bitacora.this, "Finalizó el proyecto.");
-                }
-            }
-        });
+        verificarExistenciaBitacora();
     }
 
     private void setProgress() {
@@ -63,7 +51,6 @@ public class Bitacora extends JFrame {
                 pgbBitacora.setValue(value);
                 txtProgresoBitacora.setText(String.valueOf(value));
                 pgbBitacora.setString(progreso + "%");
-                guardarBitacora(txtBitacora.getText(), value);
             }
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Ingrese un número válido.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -71,25 +58,79 @@ public class Bitacora extends JFrame {
     }
 
     private void guardarBitacora(String descripcion, int progreso) {
-        String sql = "INSERT INTO bitacora (descripcion, progreso) VALUES (?, ?)";
+        String sql = "INSERT INTO bitacora (descripcion, progreso, IdCaso) VALUES (?, ?, ?)";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, descripcion);
             pstmt.setInt(2, progreso);
+            pstmt.setString(3, idCaso);
             pstmt.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Datos guardados en la bitácora correctamente.");
+            JOptionPane.showMessageDialog(this, "Bitácora creada correctamente.");
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error al guardar los datos en la bitácora", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    private void updateBitacora(String descripcion, int progreso) {
+        String sqlUpdate = "UPDATE bitacora SET descripcion = ?, progreso = ? WHERE IdCaso = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sqlUpdate)) {
+            pstmt.setString(1, descripcion);
+            pstmt.setInt(2, progreso);
+            pstmt.setString(3, idCaso);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                JOptionPane.showMessageDialog(this, "Bitácora actualizada correctamente.");
+            } else {
+                JOptionPane.showMessageDialog(this, "No se encontró ninguna bitácora para actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al actualizar la bitácora", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void verificarExistenciaBitacora() {
+        String sql = "SELECT descripcion, progreso FROM bitacora WHERE IdCaso = ?";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, idCaso);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String descripcion = rs.getString("descripcion");
+                int progreso = rs.getInt("progreso");
+                txtBitacora.setText(descripcion);
+                pgbBitacora.setValue(progreso);
+                txtProgresoBitacora.setText(String.valueOf(progreso));
+                pgbBitacora.setString(progreso + "%");
+                btnActualizar.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JOptionPane.showMessageDialog(Bitacora.this, "Bitácora actualizada correctamente.");
+                        updateBitacora(txtBitacora.getText(), Integer.parseInt(txtProgresoBitacora.getText()));
+                    }
+                });
+            } else {
+                btnActualizar.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        JOptionPane.showMessageDialog(Bitacora.this, "Bitácora creada correctamente.");
+                        guardarBitacora(txtBitacora.getText(), Integer.parseInt(txtProgresoBitacora.getText()));
+                    }
+                });
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al verificar la existencia de la bitácora", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void main(String[] args) {
-        JFrame frameBitacora = new Bitacora();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-
+                // Ejemplo de uso: new Bitacora("25");
             }
         });
     }

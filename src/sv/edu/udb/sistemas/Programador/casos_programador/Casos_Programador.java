@@ -15,16 +15,19 @@ public class Casos_Programador extends JFrame {
     private JButton btnLlenarBitacora;
     private JPanel pnlCasos_programador;
     private Programador padre;
+    public String IdDeCaso;
 
-    public Casos_Programador(String tituloCaso, String descripcionCaso, String fechaLimiteCaso, Programador papa){
+    public Casos_Programador(String IdCaso, String tituloCaso, String descripcionCaso, String fechaLimiteCaso, Programador papa){
         this.padre = papa;
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(pnlCasos_programador);
         this.setMinimumSize(new Dimension(800, 600));
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
+        IdDeCaso=IdCaso;
 
-        lblTitulo.setText("Caso: " + tituloCaso);
+        lblTitulo.setText("Caso: " + tituloCaso + " con el id " + IdCaso);
         lblDescripcion.setText("Descripcion: " + descripcionCaso);
         lblFechaLimite.setText("Fecha Limite: " + fechaLimiteCaso);
 
@@ -33,6 +36,7 @@ public class Casos_Programador extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
+                padre.setVisible(true);
             }
         });
 
@@ -40,7 +44,7 @@ public class Casos_Programador extends JFrame {
         btnLlenarBitacora.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Bitacora bitacora = new Bitacora();
+                Bitacora bitacora = new Bitacora(IdDeCaso);
             }
         });
     }
