@@ -4,11 +4,10 @@ import java.awt.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
-
-//
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -59,7 +58,7 @@ public class menuAdmin extends JFrame {
     private JTextField txtDepartamentoSec;
     private JTable tblDepartamento;
     private JScrollPane JScrollPane;
-    private JButton btnEditar;
+    private JButton btnEditarDep;
     private JButton btnBorrar;
     private JButton btnCerrarSesionRol;
     private JLabel lblTituloJefeDesarrollo;
@@ -70,7 +69,6 @@ public class menuAdmin extends JFrame {
 
     private JButton btnBorrarDep;
 
-    private JButton btnEditarDep;
 
     private JLabel lblDepartamentoId;
 
@@ -130,6 +128,15 @@ public class menuAdmin extends JFrame {
         modeloAF = new DefaultTableModel(datosAF, columnaAF);
         tblJefeAf.setModel(modeloAF);
 
+        tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Seccion"}, 0);
+        tblDepartamento.setModel(tableModel);
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Conexión exitosa");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        }
 
         // redirecccion departamento
 
@@ -218,7 +225,7 @@ public class menuAdmin extends JFrame {
         tblDepartamento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
             public void valueChanged(ListSelectionEvent e) {
-                if(!e.getValueIsAdjusting()){
+                if (!e.getValueIsAdjusting()) {
                     int selectedRow = tblDepartamento.getSelectedRow();
                     if (selectedRow != -1) { // Verificar si se ha seleccionado una fila
                         String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
@@ -275,14 +282,14 @@ public class menuAdmin extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = tblDepartamento.getSelectedRow();
-                if(selectedRow == -1){
-                    JOptionPane.showMessageDialog(null,"Seleccione un departamento para eliminar");
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Seleccione un departamento para eliminar");
                     return;
                 }
 
                 String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
-                int confirmacion = JOptionPane.showConfirmDialog(null,"¿Desea eliminar el departamento ?","Confirm",JOptionPane.YES_NO_CANCEL_OPTION);
-                if(confirmacion != JOptionPane.YES_OPTION){
+                int confirmacion = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el departamento ?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (confirmacion != JOptionPane.YES_OPTION) {
                     return;
                 }
 
@@ -292,17 +299,51 @@ public class menuAdmin extends JFrame {
                 DefaultTableModel modelo = (DefaultTableModel) tblDepartamento.getModel();
                 modelo.removeRow(selectedRow);
 
-                JOptionPane.showMessageDialog(null,"Departamento eliminado exitosamente");
+                JOptionPane.showMessageDialog(null, "Departamento eliminado exitosamente");
 
 
             }
         });
 
+
+
+
         /* Termina lógica departamentos */
 
-
+        //Logica de JefeAreaFuncional
+        mostrarDatosCaso();
+        tblJefeAf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int filaSeleccionada = tblJefeAf.getSelectedRow();
+                if (filaSeleccionada != -1) {
+                    String idCasostr = (String) tblJefeAf.getValueAt(filaSeleccionada, 0);
+                    int idCaso = Integer.parseInt(idCasostr);
+                    int confirmacion = JOptionPane.showConfirmDialog(null, "¿Estás seguro de que quieres eliminar este caso?",
+                            "Confirmación de eliminación", JOptionPane.YES_NO_OPTION);
+                    if (confirmacion == JOptionPane.YES_OPTION) {
+                        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+                            String query = "DELETE FROM caso WHERE Id = ?";
+                            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                                statement.setInt(1, idCaso);
+                                int filasEliminadas = statement.executeUpdate();
+                                if (filasEliminadas > 0) {
+                                    DefaultTableModel modeloAF = (DefaultTableModel) tblJefeAf.getModel();
+                                    modeloAF.removeRow(filaSeleccionada); // Eliminar la fila de la tabla de la interfaz de usuario
+                                    JOptionPane.showMessageDialog(null, "Caso eliminado correctamente.");
+                                } else {
+                                    JOptionPane.showMessageDialog(null, "No se pudo eliminar el caso.");
+                                }
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error al eliminar el caso: " + ex.getMessage());
+                        }
+                    }
+                }
+            }
+        });
     }
-
 
 
     public void closeConnection() {
@@ -325,6 +366,26 @@ public class menuAdmin extends JFrame {
             System.err.println("Error al ejecutar la consulta de actualización: " + ex.getMessage());
         }
     }
+
+    private void mostrarDatosCaso(){
+        modeloAF.setRowCount(0);
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM caso");
+
+            while (resultSet.next()){
+                String idCaso = resultSet.getString("Id");
+                String nombreCaso = resultSet.getString("NombreCaso");
+                String descripcionCaso = resultSet.getString("DescripcionCaso");
+                modeloAF.addRow(new Object[]{idCaso, nombreCaso, descripcionCaso});
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla de casos" + ex.getMessage());
+        }
+    }
+
     public static void main(String[] args) {
         JFrame frama = new menuAdmin("Panel del Administrador");
     frama.setVisible(true);

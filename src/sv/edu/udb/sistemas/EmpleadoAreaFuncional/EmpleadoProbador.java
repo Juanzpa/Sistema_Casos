@@ -19,6 +19,7 @@ public class EmpleadoProbador extends JFrame {
     private JComboBox cmbBitacorasEmpleado;
     private JTable tblBitacoraEmpleado;
     private JPanel pnlEmpleado;
+    private JButton CerrarSesionEmpleadoProbador;
 
 
     //
