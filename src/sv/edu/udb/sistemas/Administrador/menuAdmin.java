@@ -17,7 +17,7 @@ import java.sql.PreparedStatement;
 
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
-
+    private Statement statement;
     private JTabbedPane tabbedPaneAdmin;
     private JLabel lblTituloProgramador;
     private JTable tblProgramadores;
@@ -73,6 +73,7 @@ public class menuAdmin extends JFrame {
     private JLabel lblDepartamentoId;
 
     private JTextField txtDepartamentoId;
+    private JButton btnAgregarDep;
     DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
     String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
     Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
@@ -131,12 +132,6 @@ public class menuAdmin extends JFrame {
         tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Seccion"}, 0);
         tblDepartamento.setModel(tableModel);
 
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa");
-        } catch (SQLException e) {
-            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
-        }
 
         // redirecccion departamento
 
@@ -187,40 +182,13 @@ public class menuAdmin extends JFrame {
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             System.out.println("Conexión exitosa");
+            statement = connection.createStatement();
         } catch (SQLException e) {
             System.err.println("Error al conectar a la base de datos: " + e.getMessage());
         }
-
 
         /* PANEL DEPARTAMENTOS */
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa");
-
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
-
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String nombreDepartamento = resultSet.getString("NombreDepartamento");
-                String seccion = resultSet.getString("Seccion");
-                modeloDepartamento.addRow(new Object[]{id, nombreDepartamento, seccion});
-            }
-
-            tblDepartamento.setModel(modeloDepartamento); // Asignar el modelo de tabla a la tabla
-
-        } catch (SQLException e) {
-            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        mostrarDepartamentos();
 
         tblDepartamento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -239,8 +207,62 @@ public class menuAdmin extends JFrame {
                     }
                 }
             }
+        });
+
+        // Agregar el departamento
+        btnAgregarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombreDepartamento = txtDepartamentoNomb.getText();
+                String seccionDepartamento = txtDepartamentoSec.getText();
+
+                if (nombreDepartamento.isEmpty() || seccionDepartamento.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"Por favor no deje campos vacios","Warning",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    // Consulta para verificar si el departamento ya existe
+                    String query = "SELECT COUNT(*) AS count FROM departamentos WHERE NombreDepartamento = ? AND Seccion = ?";
+                    PreparedStatement stmt = connection.prepareStatement(query);
+                    stmt.setString(1, nombreDepartamento);
+                    stmt.setString(2, seccionDepartamento);
+                    ResultSet resultSet = stmt.executeQuery();
+
+                    resultSet.next();
+                    int count = resultSet.getInt("count");
+
+                    if (count > 0) {
+                        // El departamento ya existe, mostrar un mensaje de error
+                        JOptionPane.showMessageDialog(null, "El departamento ya existe en la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+                        return; // Salir del método porque no se puede agregar un departamento que ya existe
+                    }
+
+                    // El departamento no existe, proceder con la inserción
+                    String insertQuery = "INSERT INTO departamentos (NombreDepartamento, Seccion) VALUES (?,?)";
+                    PreparedStatement preparedStatement = connection.prepareStatement(insertQuery);
+                    preparedStatement.setString(1, nombreDepartamento);
+                    preparedStatement.setString(2, seccionDepartamento);
+                    int rowsAffected = preparedStatement.executeUpdate();
+
+                    if (rowsAffected > 0) {
+                        JOptionPane.showMessageDialog(null, "Departamento agregado exitosamente", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+                        txtDepartamentoNomb.setText("");
+                        txtDepartamentoSec.setText("");
+
+                        // Actualizar la tabla después de la inserción
+                        mostrarDepartamentos();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al agregar el departamento", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (SQLException ex){
+                    JOptionPane.showMessageDialog(null,"Error al comunicarse con la base de datos: " + ex.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
+                }
+            }
 
         });
+
 
         // Editar el departamento
         btnEditarDep.addActionListener(new ActionListener() {
@@ -304,10 +326,6 @@ public class menuAdmin extends JFrame {
 
             }
         });
-
-
-
-
         /* Termina lógica departamentos */
 
         //Logica de JefeAreaFuncional
@@ -360,13 +378,34 @@ public class menuAdmin extends JFrame {
 
     private void executeUpdateQuery(String query) {
         try {
-            Statement statement = connection.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException ex) {
             System.err.println("Error al ejecutar la consulta de actualización: " + ex.getMessage());
         }
     }
 
+    // Departamentos
+    private void mostrarDepartamentos(){
+        try {
+            modeloDepartamento.setRowCount(0);
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String nombreDepartamento = resultSet.getString("NombreDepartamento");
+                String seccion = resultSet.getString("Seccion");
+                modeloDepartamento.addRow(new Object[]{id, nombreDepartamento, seccion});
+            }
+
+            tblDepartamento.setModel(modeloDepartamento); // Asignar el modelo de tabla a la tabla
+
+        } catch (SQLException e) {
+            System.err.println("Error al cargar la tabla: " + e.getMessage());
+        }
+    }
+
+
+    // Casos
     private void mostrarDatosCaso(){
         modeloAF.setRowCount(0);
         try {
