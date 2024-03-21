@@ -94,9 +94,8 @@ public class menuAdmin extends JFrame {
         // Tabla Departamento
         columnaDepartamento = new String[] {"ID","Nombre","Seccion"};
         datosDepartamento = new Object[][] {};
-        //modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
+        modeloDepartamento = new DefaultTableModel(datosDepartamento, columnaDepartamento);
         tblDepartamento.setModel(modeloDepartamento);
-        modeloDepartamento = (datosDepartamento.selectDepartamentos())
 
         // Tabla Empleado
         columnaEmpleado = new String[] {"Nombre", "Apellido", "Usuario", "Clave", "Departamento", "Cargo"};
