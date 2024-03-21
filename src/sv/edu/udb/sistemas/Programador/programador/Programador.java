@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import sv.edu.udb.sistemas.Programador.casos_programador.Casos_Programador;
 
 public class Programador extends JFrame {
     private JPanel pnlProgramador;
@@ -33,7 +34,8 @@ public class Programador extends JFrame {
         btnAbrirCaso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Aquí puedes abrir el caso
+                Casos_Programador caso = new Casos_Programador(tituloCaso, descripcionCaso, fechaLimite, Programador.this);
+                dispose();
             }
         });
 
@@ -44,16 +46,17 @@ public class Programador extends JFrame {
         pnlCasos.revalidate();
     }
 
-    // Método para cargar los casos desde la base de datos
+
     public void cargarCasosDesdeBaseDeDatos() {
-        String sql = "SELECT NombreCaso FROM caso";
+        String sql = "SELECT NombreCaso, DescripcionCaso, FechaFinal FROM caso";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                String tituloCaso = rs.getString("titulo_caso");
-                // Aquí puedes obtener también la descripción y la fecha límite si lo necesitas
-                agregarCaso(tituloCaso, "", ""); // Llamada al método agregarCaso con los datos obtenidos de la base de datos
+                String tituloCaso = rs.getString("NombreCaso");
+                String descripcionCaso = rs.getString("DescripcionCaso");
+                String fechaLimiteCaso = rs.getString("FechaFinal");
+                agregarCaso(tituloCaso, descripcionCaso, fechaLimiteCaso);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -61,12 +64,13 @@ public class Programador extends JFrame {
         }
     }
 
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 Programador programmer = new Programador("Programador");
-                programmer.cargarCasosDesdeBaseDeDatos(); // Cargar los casos desde la base de datos al iniciar la aplicación
+                programmer.cargarCasosDesdeBaseDeDatos();
             }
         });
     }

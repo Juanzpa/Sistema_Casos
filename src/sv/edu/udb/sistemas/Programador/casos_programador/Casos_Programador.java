@@ -46,7 +46,6 @@ public class Casos_Programador extends JFrame {
     }
 
     public static void main(String[] args) {
-        //JFrame frameCasoProg = new Casos_Programador("Casos asignados");
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
