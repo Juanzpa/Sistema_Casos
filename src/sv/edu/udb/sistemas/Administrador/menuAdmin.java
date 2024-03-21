@@ -9,13 +9,14 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
-
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
 
@@ -59,7 +60,7 @@ public class menuAdmin extends JFrame {
     private JTextField txtDepartamentoSec;
     private JTable tblDepartamento;
     private JScrollPane JScrollPane;
-    private JButton btnEditar;
+    private JButton btnEditarDep;
     private JButton btnBorrar;
     private JButton btnCerrarSesionRol;
     private JLabel lblTituloJefeDesarrollo;
@@ -70,7 +71,6 @@ public class menuAdmin extends JFrame {
 
     private JButton btnBorrarDep;
 
-    private JButton btnEditarDep;
 
     private JLabel lblDepartamentoId;
 
@@ -130,6 +130,15 @@ public class menuAdmin extends JFrame {
         modeloAF = new DefaultTableModel(datosAF, columnaAF);
         tblJefeAf.setModel(modeloAF);
 
+        tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Seccion"}, 0);
+        tblDepartamento.setModel(tableModel);
+
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Conexión exitosa");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        }
 
         // redirecccion departamento
 
@@ -303,8 +312,6 @@ public class menuAdmin extends JFrame {
 
     }
 
-
-
     public void closeConnection() {
         if (connection != null) {
             try {
@@ -325,6 +332,7 @@ public class menuAdmin extends JFrame {
             System.err.println("Error al ejecutar la consulta de actualización: " + ex.getMessage());
         }
     }
+
     public static void main(String[] args) {
         JFrame frama = new menuAdmin("Panel del Administrador");
     frama.setVisible(true);
