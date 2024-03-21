@@ -17,16 +17,16 @@ import java.sql.PreparedStatement;
 
 public class menuAdmin extends JFrame {
     private JPanel pnlmenuadmin;
-    private Statement statement;
+
     private JTabbedPane tabbedPaneAdmin;
     private JLabel lblTituloProgramador;
     private JTable tblProgramadores;
-    private JTextField txtNombreEmpl;
-    private JTextField txtApellidoEmpl;
-    private JTextField txtUsuarioEmpl;
-    private JPasswordField pwdClaveEmpl;
-    private JComboBox cmbDepartamentosEmpl;
-    private JComboBox cmbCargoEmpl;
+    private JTextField textField1;
+    private JTextField textField2;
+    private JTextField textField3;
+    private JPasswordField pwdEmpl;
+    private JComboBox comboBox1;
+    private JComboBox comboBox2;
     private JButton btnEnviarEmpl;
     private JButton btnEditarEmpl;
     private JButton btnEliminarEmpl;
@@ -73,7 +73,6 @@ public class menuAdmin extends JFrame {
     private JLabel lblDepartamentoId;
 
     private JTextField txtDepartamentoId;
-    private JButton btnAgregarDep;
     DefaultTableModel modelEmpleado, modeloPogramadores, modeloJefeDesarrollo, modeloAF, modeloDepartamento = null;
     String[] columnaProgramadores, columnaJefeDesarrollo, columnaEmpleado, columnaAF, columnaDepartamento;
     Object[][] datosProgramador, datosJefeDesarrollo, datosEmpleado, datosAF, datosDepartamento;
@@ -110,7 +109,6 @@ public class menuAdmin extends JFrame {
         modelEmpleado = new DefaultTableModel(datosEmpleado, columnaEmpleado);
         tblEmpl.setModel(modelEmpleado);
 
-
         // Tabla Programadores
         columnaProgramadores = new String[]{"ID", "Nombre", "Apellido", "Clave", "Cargo"};
         datosProgramador = new Object[][]{};
@@ -133,6 +131,12 @@ public class menuAdmin extends JFrame {
         tableModel = new DefaultTableModel(new String[]{"ID", "Nombre", "Seccion"}, 0);
         tblDepartamento.setModel(tableModel);
 
+        try {
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Conexión exitosa");
+        } catch (SQLException e) {
+            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        }
 
         // redirecccion departamento
 
@@ -179,17 +183,35 @@ public class menuAdmin extends JFrame {
             }
         });
 
-        //Conexion a la BD
+        /* PANEL DEPARTAMENTOS */
+        Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa");
-            statement = connection.createStatement();
+         //   System.out.println("Conexión exitosa");
+
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String nombreDepartamento = resultSet.getString("NombreDepartamento");
+                String seccion = resultSet.getString("Seccion");
+                modeloDepartamento.addRow(new Object[]{id, nombreDepartamento, seccion});
+            }
+
+            tblDepartamento.setModel(modeloDepartamento); // Asignar el modelo de tabla a la tabla
+
         } catch (SQLException e) {
             System.err.println("Error al conectar a la base de datos: " + e.getMessage());
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-        /* PANEL DEPARTAMENTOS */
-        mostrarDepartamentos();
 
         tblDepartamento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -208,46 +230,76 @@ public class menuAdmin extends JFrame {
                     }
                 }
             }
+
         });
 
+        // Editar el departamento
+        btnEditarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                int selectedRow = tblDepartamento.getSelectedRow();
+                if (selectedRow == -1) {
+                    // Si no se ha seleccionado ninguna fila
+                    JOptionPane.showMessageDialog(null, "Seleccione un departamento para editar", "Error", JOptionPane.ERROR_MESSAGE);
+                    return; // Salir del método porque no hay nada que editar
+                }
+
+                String id = txtDepartamentoId.getText();
+                String nombre = txtDepartamentoNomb.getText();
+                String seccion = txtDepartamentoSec.getText();
+
+                // Validar que los campos no estén vacíos
+                if (nombre.isEmpty() || seccion.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos deben estar llenos", "Error", JOptionPane.ERROR_MESSAGE);
+                    return; // Salir del método porque falta información
+                }
+
+                // Actualizar fila seleccionada en la tabla
+                tblDepartamento.setValueAt(id, selectedRow, 0);
+                tblDepartamento.setValueAt(nombre, selectedRow, 1);
+                tblDepartamento.setValueAt(seccion, selectedRow, 2);
+
+                // Query para actualizar la BD
+                String updateQuery = "UPDATE departamentos SET NombreDepartamento = '" + nombre + "', Seccion = '" + seccion + "' WHERE Id = " + id;
+                executeUpdateQuery(updateQuery);
+
+                JOptionPane.showMessageDialog(null, "Departamento actualizado exitosamente");
+            }
+        });
+
+        // Borrar Departamento
+        btnBorrarDep.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedRow = tblDepartamento.getSelectedRow();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(null, "Seleccione un departamento para eliminar");
+                    return;
+                }
+
+                String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
+                int confirmacion = JOptionPane.showConfirmDialog(null, "¿Desea eliminar el departamento ?", "Confirm", JOptionPane.YES_NO_CANCEL_OPTION);
+                if (confirmacion != JOptionPane.YES_OPTION) {
+                    return;
+                }
+
+                String deleteQuery = "DELETE FROM departamentos WHERE Id = " + id;
+                executeUpdateQuery(deleteQuery);
+
+                DefaultTableModel modelo = (DefaultTableModel) tblDepartamento.getModel();
+                modelo.removeRow(selectedRow);
+
+                JOptionPane.showMessageDialog(null, "Departamento eliminado exitosamente");
+
+
+            }
+        });
+
+
+
+
         /* Termina lógica departamentos */
-
-        // Logica para Empleado
-        cmbDepartamentosEmpl = new JComboBox<>();
-        cmbCargoEmpl = new JComboBox<>();
-        String IdDepartamentoPerteneciente = ""; // Variable para almacenar el ID del departamento del empleado seleccionado
-        String IdCargo = ""; // Variable para almacenar el ID del cargo del empleado seleccionado
-        try {
-            // Obtener los nombres de los departamentos desde la base de datos
-            String queryDepartamento = "SELECT NombreDepartamento FROM departamentos";
-            PreparedStatement preparedStatementDepartamento = connection.prepareStatement(queryDepartamento);
-            ResultSet resultSetDepartamento = preparedStatementDepartamento.executeQuery();
-
-            // Llenar el JComboBox de Departamentos con los nombres obtenidos
-            while (resultSetDepartamento.next()) {
-                String nombreDepartamento = resultSetDepartamento.getString("NombreDepartamento");
-                cmbDepartamentosEmpl.addItem(nombreDepartamento);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al cargar los departamentos: " + ex.getMessage());
-        }
-
-        try {
-            // Obtener los nombres de los cargos desde la base de datos
-            String queryCargo = "SELECT Cargo FROM cargos";
-            PreparedStatement preparedStatementCargo = connection.prepareStatement(queryCargo);
-            ResultSet resultSetCargo = preparedStatementCargo.executeQuery();
-
-            // Llenar el JComboBox de Cargos con los nombres obtenidos
-            while (resultSetCargo.next()) {
-                String nombreCargo = resultSetCargo.getString("Cargo");
-                cmbCargoEmpl.addItem(nombreCargo);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Error al cargar los cargos: " + ex.getMessage());
-        }
 
         //Logica de JefeAreaFuncional
         mostrarDatosCaso();
@@ -282,9 +334,6 @@ public class menuAdmin extends JFrame {
                 }
             }
         });
-
-
-
     }
 
 
@@ -302,34 +351,13 @@ public class menuAdmin extends JFrame {
 
     private void executeUpdateQuery(String query) {
         try {
+            Statement statement = connection.createStatement();
             statement.executeUpdate(query);
         } catch (SQLException ex) {
             System.err.println("Error al ejecutar la consulta de actualización: " + ex.getMessage());
         }
     }
 
-    // Departamentos
-    private void mostrarDepartamentos(){
-        try {
-            modeloDepartamento.setRowCount(0);
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
-
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String nombreDepartamento = resultSet.getString("NombreDepartamento");
-                String seccion = resultSet.getString("Seccion");
-                modeloDepartamento.addRow(new Object[]{id, nombreDepartamento, seccion});
-            }
-
-            tblDepartamento.setModel(modeloDepartamento); // Asignar el modelo de tabla a la tabla
-
-        } catch (SQLException e) {
-            System.err.println("Error al cargar la tabla: " + e.getMessage());
-        }
-    }
-
-
-    // Casos
     private void mostrarDatosCaso(){
         modeloAF.setRowCount(0);
         try {

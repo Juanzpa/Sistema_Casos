@@ -7,8 +7,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import javax.swing.*;
 
 public class SolicitudCasos extends JFrame{
@@ -19,11 +17,7 @@ public class SolicitudCasos extends JFrame{
     private JPanel JpJArea;
     private JProgressBar progressBar1;
     private JComboBox comboBox2;
-
     private JTextField textField2;
-
-    private JButton btnCerrarSesionJAF;
-
 
     public SolicitudCasos(String panel) {
         super(panel);
@@ -32,12 +26,11 @@ public class SolicitudCasos extends JFrame{
         this.setMinimumSize(new Dimension(600, 500));
         this.setLocationRelativeTo(getParent());
 
-
         enviarButton.addActionListener(e -> {
             String idDepartamentoAsignado = comboBox1.getSelectedItem().toString();
             switch (idDepartamentoAsignado) {
                 case "Finanzas" :
-                   idDepartamentoAsignado = "1";
+                    idDepartamentoAsignado = "1";
                     break;
                 case "Ventas" :
                     idDepartamentoAsignado = "2";
@@ -56,13 +49,6 @@ public class SolicitudCasos extends JFrame{
             String nombreCaso = textField1.getText(); // Obtener el nombre del caso
             String descripcion = textField2.getText(); // Obtener la descripción del caso
             guardarCasos(nombreCaso, idDepartamentoAsignado, descripcion);
-
-        btnCerrarSesionJAF.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-            }
-
         });
     }
 
