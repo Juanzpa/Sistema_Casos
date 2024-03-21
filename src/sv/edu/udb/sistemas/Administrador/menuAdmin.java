@@ -183,20 +183,11 @@ public class menuAdmin extends JFrame {
             }
         });
 
-        //Conexion a la BD
-        try {
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa");
-        } catch (SQLException e) {
-            System.err.println("Error al conectar a la base de datos: " + e.getMessage());
-        }
-
-
         /* PANEL DEPARTAMENTOS */
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            System.out.println("Conexión exitosa");
+         //   System.out.println("Conexión exitosa");
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
