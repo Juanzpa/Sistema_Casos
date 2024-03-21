@@ -22,7 +22,6 @@ public class Casos_Programador extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(pnlCasos_programador);
         this.setMinimumSize(new Dimension(800, 600));
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
         IdDeCaso=IdCaso;

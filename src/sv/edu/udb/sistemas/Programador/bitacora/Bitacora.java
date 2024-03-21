@@ -29,7 +29,6 @@ public class Bitacora extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setContentPane(pnlBitacora);
         this.setMinimumSize(new Dimension(800, 600));
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
 
