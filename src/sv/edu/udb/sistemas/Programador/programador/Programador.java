@@ -42,11 +42,7 @@ public class Programador extends JFrame {
         btnAbrirCaso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-<<<<<<< Updated upstream
                 Casos_Programador caso = new Casos_Programador(IdCaso, tituloCaso, descripcionCaso, fechaLimite, Programador.this);
-=======
-                Casos_Programador casos = new Casos_Programador(tituloCaso, descripcionCaso, fechaLimite, Programador.this);
->>>>>>> Stashed changes
                 dispose();
             }
         });
