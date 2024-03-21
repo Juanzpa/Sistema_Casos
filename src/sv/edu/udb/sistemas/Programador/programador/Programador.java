@@ -23,16 +23,9 @@ public class Programador extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(pnlProgramador);
         this.setMinimumSize(new Dimension(800, 600));
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
         pnlCasos.setLayout(new BoxLayout(pnlCasos, BoxLayout.Y_AXIS));
-        btnCerrarSesionProgramador.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(Programador.this, "cerrando sesion");
-            }
-        });
     }
 
     public void agregarCaso(String IdCaso, String tituloCaso, String descripcionCaso, String fechaLimite){
@@ -42,11 +35,7 @@ public class Programador extends JFrame {
         btnAbrirCaso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-<<<<<<< Updated upstream
                 Casos_Programador caso = new Casos_Programador(IdCaso, tituloCaso, descripcionCaso, fechaLimite, Programador.this);
-=======
-                Casos_Programador casos = new Casos_Programador(tituloCaso, descripcionCaso, fechaLimite, Programador.this);
->>>>>>> Stashed changes
                 dispose();
             }
         });

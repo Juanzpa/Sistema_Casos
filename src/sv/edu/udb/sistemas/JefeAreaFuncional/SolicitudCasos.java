@@ -3,15 +3,10 @@ package sv.edu.udb.sistemas.JefeAreaFuncional;
 import sv.edu.udb.sistemas.Conexion;
 
 import java.awt.*;
-<<<<<<< Updated upstream
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-=======
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
->>>>>>> Stashed changes
 import javax.swing.*;
 
 public class SolicitudCasos extends JFrame{
@@ -22,11 +17,7 @@ public class SolicitudCasos extends JFrame{
     private JPanel JpJArea;
     private JProgressBar progressBar1;
     private JComboBox comboBox2;
-<<<<<<< Updated upstream
     private JTextField textField2;
-=======
-    private JButton btnCerrarSesionJAF;
->>>>>>> Stashed changes
 
     public SolicitudCasos(String panel) {
         super(panel);
@@ -34,13 +25,12 @@ public class SolicitudCasos extends JFrame{
         setContentPane(JpJArea);
         this.setMinimumSize(new Dimension(600, 500));
         this.setLocationRelativeTo(getParent());
-<<<<<<< Updated upstream
 
         enviarButton.addActionListener(e -> {
             String idDepartamentoAsignado = comboBox1.getSelectedItem().toString();
             switch (idDepartamentoAsignado) {
                 case "Finanzas" :
-                   idDepartamentoAsignado = "1";
+                    idDepartamentoAsignado = "1";
                     break;
                 case "Ventas" :
                     idDepartamentoAsignado = "2";
@@ -59,13 +49,6 @@ public class SolicitudCasos extends JFrame{
             String nombreCaso = textField1.getText(); // Obtener el nombre del caso
             String descripcion = textField2.getText(); // Obtener la descripción del caso
             guardarCasos(nombreCaso, idDepartamentoAsignado, descripcion);
-=======
-        btnCerrarSesionJAF.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                
-            }
->>>>>>> Stashed changes
         });
     }
 
