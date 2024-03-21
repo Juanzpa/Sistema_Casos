@@ -195,7 +195,7 @@
               </hspacer>
               <component id="19171" class="javax.swing.JButton" binding="btnCerrarSesionRol">
                 <constraints>
-                  <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <text value="Cerrar Sesion"/>
@@ -264,6 +264,8 @@
               </component>
               <component id="44275" class="javax.swing.JButton" binding="btnBorrar">
                 <constraints>
+              <component id="44275" class="javax.swing.JButton" binding="btnBorrarDep">
+                <constraints>
                   <grid row="4" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
@@ -286,22 +288,30 @@
                   </component>
                 </children>
               </scrollpane>
-              <component id="48062" class="javax.swing.JLabel" binding="lblId">
+              <component id="e8f4" class="javax.swing.JLabel" binding="lblDepartamentoId">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="1" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font size="14" style="1"/>
+                  <font size="16" style="1"/>
                   <text value="Id"/>
                 </properties>
               </component>
-              <component id="b8af1" class="javax.swing.JTextField" binding="txtDepartamentoId">
+              <component id="dea5a" class="javax.swing.JTextField" binding="txtDepartamentoId">
                 <constraints>
                   <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
                     <preferred-size width="150" height="-1"/>
                   </grid>
                 </constraints>
                 <properties/>
+              </component>
+              <component id="d64ea" class="javax.swing.JButton" binding="btnEditarDep">
+                <constraints>
+                  <grid row="4" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Editar"/>
+                </properties>
               </component>
             </children>
           </grid>

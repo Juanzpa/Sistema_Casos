@@ -1,5 +1,6 @@
 package sv.edu.udb.sistemas;
 
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +22,7 @@ public class Login extends JFrame {
         setTitle("Inicio de sesión");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(pnlLogin);
-        setSize(400, 300);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
 
         btnIngresar.addActionListener(new ActionListener() {
@@ -58,6 +59,7 @@ public class Login extends JFrame {
             return false;
         }
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

@@ -1,11 +1,15 @@
 package sv.edu.udb.sistemas.Programador.programador;
 
-import sv.edu.udb.sistemas.Programador.casos_programador.Casos_Programador;
+import sv.edu.udb.sistemas.Conexion;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Programador extends JFrame {
     private JPanel pnlProgramador;
@@ -29,8 +33,7 @@ public class Programador extends JFrame {
         btnAbrirCaso.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Casos_Programador casos = new Casos_Programador(tituloCaso, descripcionCaso, fechaLimite, Programador.this);
-
+                // Aquí puedes abrir el caso
             }
         });
 
@@ -41,20 +44,30 @@ public class Programador extends JFrame {
         pnlCasos.revalidate();
     }
 
+    // Método para cargar los casos desde la base de datos
+    public void cargarCasosDesdeBaseDeDatos() {
+        String sql = "SELECT NombreCaso FROM caso";
+        try (Connection conn = Conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                String tituloCaso = rs.getString("titulo_caso");
+                // Aquí puedes obtener también la descripción y la fecha límite si lo necesitas
+                agregarCaso(tituloCaso, "", ""); // Llamada al método agregarCaso con los datos obtenidos de la base de datos
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error al cargar los casos desde la base de datos", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public static void main(String[] args) {
-        //JFrame frameProgramador = new Programador("Obama");
-        //frameProgramador.setVisible(true);
-
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Programador programmer = new Programador("Obama");
-                programmer.agregarCaso("caso 1", "descripcion del caso 1", "12-12-2024");
-                programmer.agregarCaso("caso 2cferxewrx ewxzewxfefx ewzfefxerxr", "descripcion del segundo", "12-12-2014");
-                programmer.agregarCaso("caso 1 rcgtrxgertxgrtrcx", "la gran descripcion del tercero", "12-12-2025");
+                Programador programmer = new Programador("Programador");
+                programmer.cargarCasosDesdeBaseDeDatos(); // Cargar los casos desde la base de datos al iniciar la aplicación
             }
         });
     }
-
 }
