@@ -22,9 +22,9 @@ public class Login extends JFrame {
         setTitle("Inicio de sesión");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setContentPane(pnlLogin);
-        setSize(400, 300);
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
-//as
+
         btnIngresar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
