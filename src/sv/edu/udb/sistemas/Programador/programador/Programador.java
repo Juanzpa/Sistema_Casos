@@ -43,6 +43,18 @@ public class Programador extends JFrame {
                 login.setVisible(true);
             }
         });
+        mostrarDatosEmpleado(empleado);
+    }
+
+    private void mostrarDatosEmpleado(Empleado empleado) {
+        // Crear el mensaje con los datos del empleado
+        String mensaje = "Nombre: " + empleado.getNombre() + "\n"
+                + "Apellido: " + empleado.getApellido() +"\n"
+                + "Departamento: " + empleado.getIdDepartamentoAsignado() + "\n"
+                + "Cargo: " + empleado.getIdCargo();
+
+        // Mostrar el mensaje en una ventana emergente
+        JOptionPane.showMessageDialog(this, mensaje, "Datos del Empleado", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void agregarCaso(String IdCaso, String tituloCaso, String descripcionCaso, String fechaLimite){

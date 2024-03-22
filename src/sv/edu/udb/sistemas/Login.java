@@ -99,19 +99,20 @@ public class Login extends JFrame {
 
     // Método para crear objeto para cargo Administrador y llamar a los métodos correspondientes
     private void crearObjetoAdministrador(Empleado empleado) {
+
         // Crear objeto para cargo Administrador con los datos del empleado
         menuAdmin administrador = new menuAdmin(empleado);
         menuAdmin adminner = new menuAdmin("Panel Administradir", empleado);
         adminner.setVisible(true);
+
+        // Cerrar la ventana actual de Login
         dispose();
-          }
+    }
 
     // Método para crear objeto para cargo Jefe de desarrollo y llamar a los métodos correspondientes
     private void crearObjetoJefeDesarrollo(Empleado empleado) {
         // Crear objeto para cargo Jefe de desarrollo con los datos del empleado
         JefeDesarrollo jefeDesarrollo = new JefeDesarrollo(empleado);
-        // Llamar a los métodos randoms del cargo Jefe de desarrollo
-        jefeDesarrollo.metodoRandomJefeDesarrollo();
         // Mostrar mensaje de confirmación
         JOptionPane.showMessageDialog(Login.this, "Se ha creado un objeto Jefe de Desarrollo correctamente", "Objeto Creado", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -120,8 +121,6 @@ public class Login extends JFrame {
     private void crearObjetoJefeAreaFuncional(Empleado empleado) {
         // Crear objeto para cargo Jefe de área funcional con los datos del empleado
         JefeAreaFuncional jefeAreaFuncional = new JefeAreaFuncional(empleado);
-        // Llamar a los métodos randoms del cargo Jefe de área funcional
-        jefeAreaFuncional.metodoRandomJefeAreaFuncional();
         // Mostrar mensaje de confirmación
         JOptionPane.showMessageDialog(Login.this, "Se ha creado un objeto Jefe de Área Funcional correctamente", "Objeto Creado", JOptionPane.INFORMATION_MESSAGE);
     }
@@ -130,8 +129,6 @@ public class Login extends JFrame {
     public void crearObjetoEmpleadoFuncional(Empleado empleado) {
         // Crear objeto para cargo Empleado funcional con los datos del empleado
         EmpleadoFuncional empleadoFuncional = new EmpleadoFuncional(empleado);
-        // Llamar a los métodos randoms del cargo Empleado funcional
-        empleadoFuncional.metodoRandomEmpleadoFuncional();
 
         // Iniciar la clase EmpleadoProbador pasándole el objeto empleadoFuncional
         EmpleadoProbador empleadoProbador = new EmpleadoProbador("panel", empleadoFuncional);
@@ -145,16 +142,39 @@ public class Login extends JFrame {
     private void crearObjetoProgramador(Empleado empleado) {
         // Crear objeto para cargo Programador con los datos del empleado
         Programador programador = new Programador(empleado);
-        // Llamar a los métodos randoms del cargo Programador
         // Mostrar mensaje de confirmación
+
         sv.edu.udb.sistemas.Programador.programador.Programador programmer = new sv.edu.udb.sistemas.Programador.programador.Programador("Programador", empleado);
+        programmer.cargarCasosDesdeBaseDeDatos();
         programmer.setVisible(true);
         dispose();
     }
 
 
     // Clase para representar Administrador
+    public class Administrador {
+        private Empleado empleado;
 
+        public Administrador(Empleado empleado) {
+            this.empleado = empleado;
+        }
+
+        public String getNombre() {
+            return empleado.getNombre();
+        }
+
+        public String getApellido() {
+            return empleado.getApellido();
+        }
+
+        public String getDepartamento() {
+            return String.valueOf(empleado.getIdDepartamentoAsignado());
+        }
+
+        public String getCargo() {
+            return String.valueOf(empleado.getIdCargo());
+        }
+    }
 
     // Clase para representar Jefe de Desarrollo
     public class JefeDesarrollo {
@@ -164,9 +184,20 @@ public class Login extends JFrame {
             this.empleado = empleado;
         }
 
-        // Método random para Jefe de Desarrollo
-        public void metodoRandomJefeDesarrollo() {
-            // Implementación para Jefe de Desarrollo
+        public String getNombre() {
+            return empleado.getNombre();
+        }
+
+        public String getApellido() {
+            return empleado.getApellido();
+        }
+
+        public String getDepartamento() {
+            return String.valueOf(empleado.getIdDepartamentoAsignado());
+        }
+
+        public String getCargo() {
+            return String.valueOf(empleado.getIdCargo());
         }
     }
 
@@ -178,9 +209,20 @@ public class Login extends JFrame {
             this.empleado = empleado;
         }
 
-        // Método random para Jefe de Área Funcional
-        public void metodoRandomJefeAreaFuncional() {
-            // Implementación para Jefe de Área Funcional
+        public String getNombre() {
+            return empleado.getNombre();
+        }
+
+        public String getApellido() {
+            return empleado.getApellido();
+        }
+
+        public String getDepartamento() {
+            return String.valueOf(empleado.getIdDepartamentoAsignado());
+        }
+
+        public String getCargo() {
+            return String.valueOf(empleado.getIdCargo());
         }
     }
 
@@ -191,11 +233,6 @@ public class Login extends JFrame {
 
         public EmpleadoFuncional(Empleado empleado) {
             this.empleado = empleado;
-        }
-
-        // Método random para Empleado Funcional
-        public void metodoRandomEmpleadoFuncional() {
-            // Implementación para Empleado Funcional
         }
 
         // Métodos getter para acceder a los datos del empleado
@@ -221,7 +258,23 @@ public class Login extends JFrame {
         private Empleado empleado;
 
         public Programador(Empleado empleado) {
+            this.empleado = empleado;
+        }
 
+        public String getNombre() {
+            return empleado.getNombre();
+        }
+
+        public String getApellido() {
+            return empleado.getApellido();
+        }
+
+        public String getDepartamento() {
+            return String.valueOf(empleado.getIdDepartamentoAsignado());
+        }
+
+        public String getCargo() {
+            return String.valueOf(empleado.getIdCargo());
         }
     }
 
