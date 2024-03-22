@@ -249,7 +249,7 @@ public class menuAdmin extends JFrame {
                 if (selectedRow == -1) {
                     // Si no se ha seleccionado ninguna fila
                     JOptionPane.showMessageDialog(null, "Seleccione un departamento para editar", "Error", JOptionPane.ERROR_MESSAGE);
-                    return; // Salir del método porque no hay nada que editar
+                    return;
                 }
 
                 String id = txtDepartamentoId.getText();
@@ -324,12 +324,12 @@ public class menuAdmin extends JFrame {
                     return;
                 }
 
-                // Obtener el ID del departamento seleccionado
+
                 int IdDepartamentoPerteneciente = obtenerIdDepartamento(departamento);
 
-                // Si se obtiene un ID válido, proceder con la inserción del empleado
+
                 if (IdDepartamentoPerteneciente != -1) {
-                    // Query para insertar el nuevo empleado en la base de datos
+
                     String insertQuery = "INSERT INTO empleados (Nombre, Apellido, NombreUsuario, Contrasenia, IdDepartamentoPerteneciente, IdCargo) VALUES (?, ?, ?, ?, ?, ?)";
                     try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
                          PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
@@ -365,10 +365,10 @@ public class menuAdmin extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                // Obtener el modelo de la tabla
+
                 DefaultTableModel model = (DefaultTableModel) tblEmpl.getModel();
 
-                // Obtener la fila seleccionada
+
                 int selectedRow = tblEmpl.getSelectedRow();
 
                 // Verificar si se ha seleccionado una fila
@@ -377,19 +377,17 @@ public class menuAdmin extends JFrame {
                     String nombre = model.getValueAt(selectedRow, 0).toString();
                     String apellido = model.getValueAt(selectedRow, 1).toString();
                     String usuario = model.getValueAt(selectedRow, 2).toString();
-                    String passwordPlaceholder = "*********"; // Placeholder para la contraseña
+                    String passwordPlaceholder = "*********";
 
-                    // Asignar los datos a los campos correspondientes
                     txtNombreEmpl.setText(nombre);
                     txtApellidoEmpl.setText(apellido);
                     txtUsuarioEmpl.setText(usuario);
 
-                    // Establecer el contenido del campo de contraseña
+
                     pwdEmpl.setText(passwordPlaceholder);
                     pwdEmpl.setEchoChar((char) 0);
 
-                    // Si los datos de departamento y cargo están almacenados en la tabla, también puedes asignarlos aquí
-                    // Solo asegúrate de que los valores correspondientes se encuentren en las columnas correctas
+
                 }
             }
         });
@@ -434,7 +432,7 @@ public class menuAdmin extends JFrame {
                     model.setValueAt(nombre, selectedRow, 0);
                     model.setValueAt(apellido, selectedRow, 1);
                     model.setValueAt(usuario, selectedRow, 2);
-                    // No se actualiza la contraseña en la tabla por razones de seguridad
+
                     // model.setValueAt(clave, selectedRow, 3);
                     //  model.setValueAt(departamento, selectedRow, departamentoColumnIndex);
                     //       model.setValueAt(cargo, selectedRow, cargoColumnIndex);
@@ -740,7 +738,7 @@ public class menuAdmin extends JFrame {
     }
 
     // cmb de Departamentos en seccion de Empleado(Admin)
-    // Método para limpiar los campos del empleado después de la inserción exitosa
+
     private void limpiarCamposEmpleado() {
         txtNombreEmpl.setText("");
         txtApellidoEmpl.setText("");

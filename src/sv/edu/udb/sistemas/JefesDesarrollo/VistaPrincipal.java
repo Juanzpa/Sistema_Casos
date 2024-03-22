@@ -24,7 +24,7 @@ public class VistaPrincipal extends JFrame {
         listModel = new DefaultListModel<>();
         listCasos = new JList<>(listModel);
         btnVerDetalles = new JButton("Ver Detalles");
-        casos = new ArrayList<>(); // Aquí cargarías los casos desde tu base de datos o alguna fuente de datos
+        casos = new ArrayList<>();
     }
 
     private void setupLayout() {
