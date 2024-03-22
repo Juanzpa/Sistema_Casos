@@ -40,6 +40,16 @@ public class Bitacora extends JFrame {
         });
 
         verificarExistenciaBitacora();
+        btnFinalizar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (pgbBitacora.getValue() == 100) {
+                    JOptionPane.showMessageDialog(Bitacora.this, "Terminado exitosamente");
+                } else {
+                    JOptionPane.showMessageDialog(Bitacora.this, "Aun no se puede terminar este caso");
+                }
+            }
+        });
     }
 
     private void setProgress() {
@@ -72,12 +82,13 @@ public class Bitacora extends JFrame {
     }
 
     private void updateBitacora(String descripcion, int progreso) {
-        String sqlUpdate = "UPDATE bitacora SET descripcion = ?, progreso = ? WHERE IdCaso = ?";
+        String sqlUpdate = "UPDATE bitacora SET descripcion = ?, progreso = ?, EtapaAvance = CASE WHEN ? = 100 THEN 'Finalizado' ELSE EtapaAvance END WHERE IdCaso = ?";
         try (Connection conn = Conexion.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sqlUpdate)) {
             pstmt.setString(1, descripcion);
             pstmt.setInt(2, progreso);
-            pstmt.setString(3, idCaso);
+            pstmt.setInt(3, progreso); // Se compara si el progreso es igual a 100
+            pstmt.setString(4, idCaso);
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 JOptionPane.showMessageDialog(this, "Bitácora actualizada correctamente.");
