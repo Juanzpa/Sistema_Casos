@@ -54,9 +54,6 @@ public class menuAdmin extends JFrame {
     private JButton btnProgramador;
     private JLabel lblJA;
     private JPanel lblJA1;
-    private JButton btnAgregarProg;
-    private JButton btnEditarProg;
-    private JButton btnEliminarProg;
     private JLabel lblDepartamento;
     private JTextField txtDepartamentoNomb;
     private JTextField txtDepartamentoSec;
@@ -301,11 +298,15 @@ public class menuAdmin extends JFrame {
 
             }
         });
-
-
-
-
         /* Termina lógica departamentos */
+
+        // Empleado
+        mostrarDatosEmpleados();
+
+        // Jefe de Desarrollo
+        mostrarDatosJefesDesarrollo();
+
+
 
         //Logica de JefeAreaFuncional
         mostrarDatosCaso();
@@ -340,6 +341,10 @@ public class menuAdmin extends JFrame {
                 }
             }
         });
+
+        // Programdor
+        mostrarDatosProgramador();
+
         btnCerrarSesionRol.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -397,6 +402,73 @@ public class menuAdmin extends JFrame {
         }
 
     }
+
+    private void mostrarDatosEmpleados(){
+
+    }
+
+    private void mostrarDatosJefesDesarrollo(){
+        modeloJefeDesarrollo.setRowCount(0);
+        try{
+            connection = DriverManager.getConnection(URL,USER,PASSWORD);
+            String query = "SELECT * FROM empleados WHERE IdCargo = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1,2);
+
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while(resultSet.next()){
+                String id = resultSet.getString("Id");
+                String nombre = resultSet.getString("Nombre");
+                String apellido = resultSet.getString("Apellido");
+                String nombreUsuario = resultSet.getString("NombreUsuario");
+                String clave = resultSet.getString("Contrasenia");
+                String cargo = resultSet.getString("IdCargo");
+
+                modeloJefeDesarrollo.addRow(new Object[]{id, nombre, apellido, nombreUsuario, clave, cargo});
+            }
+            resultSet.close();
+            pstmt.close();
+            connection.close();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla de Jefes de Desarrollo: " + ex.getMessage());
+        }
+    }
+
+    private void mostrarDatosProgramador(){
+        modeloPogramadores.setRowCount(0);
+        try {
+
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            String query = "SELECT * FROM empleados WHERE IdCargo = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1, 5);
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                String nombre = resultSet.getString("Nombre");
+                String apellido = resultSet.getString("Apellido");
+                String clave = resultSet.getString("Contrasenia");
+                String nombreUsuario = resultSet.getString("NombreUsuario");
+                String cargo = resultSet.getString("IdCargo");
+
+
+                modeloPogramadores.addRow(new Object[]{id, nombre, apellido, nombreUsuario, clave, cargo});
+            }
+
+            resultSet.close();
+            pstmt.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla de Programadores: " + ex.getMessage());
+        }
+    }
+
 
     public static void main(String[] args) {
         Empleado empleado = new Empleado();
