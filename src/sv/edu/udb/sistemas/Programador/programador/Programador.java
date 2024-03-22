@@ -16,6 +16,7 @@ public class Programador extends JFrame {
     private JPanel pnlProgramador;
     private JLabel lblTitulo;
     private JPanel pnlCasos;
+    private JButton btnCerrarSesionProg;
     private JButton btnCerrarSesionProgramador;
 
     public Programador(String title){
@@ -26,6 +27,14 @@ public class Programador extends JFrame {
         this.setLocationRelativeTo(getParent());
         this.setVisible(true);
         pnlCasos.setLayout(new BoxLayout(pnlCasos, BoxLayout.Y_AXIS));
+
+        //cerrar sesion
+        btnCerrarSesionProg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
     }
 
     public void agregarCaso(String IdCaso, String tituloCaso, String descripcionCaso, String fechaLimite){
