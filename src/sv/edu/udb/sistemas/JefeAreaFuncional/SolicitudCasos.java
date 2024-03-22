@@ -12,15 +12,18 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.*;
+import javax.swing.JFrame;
+import java.sql.Statement;
 
 public class SolicitudCasos extends JFrame{
     private JTabbedPane tabbedPane1;
     private JButton enviarButton;
     private JTextField textField1;
+    private Connection connection;
     private JComboBox comboBox1;
     private JPanel JpJArea;
-    private JProgressBar progressBar1;
-    private JComboBox comboBox2;
+    private JProgressBar progressBar;
+    private JComboBox cmbProgreso;
     private JTextField textField2;
     private JButton cerrarSesionButton;
 
@@ -30,7 +33,14 @@ public class SolicitudCasos extends JFrame{
         setContentPane(JpJArea);
         this.setMinimumSize(new Dimension(600, 500));
         this.setLocationRelativeTo(getParent());
-
+        obtenerBitacora();
+        mostrarBitacora();
+        cmbProgreso.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarBitacora();
+            }
+        });
         enviarButton.addActionListener(e -> {
             String idDepartamentoAsignado = comboBox1.getSelectedItem().toString();
             switch (idDepartamentoAsignado) {
@@ -96,7 +106,85 @@ public class SolicitudCasos extends JFrame{
         }
     }
 
-    public static void main(String[] args){
+    //barra progreso casos
+
+    private void obtenerBitacora() {
+        try (Connection connection = Conexion.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT IdCaso FROM bitacora")) {
+
+            while (resultSet.next()) {
+                int idCaso = resultSet.getInt("IdCaso");
+                String nombreCaso = obtenerNombreCaso(idCaso);
+                cmbProgreso.addItem(nombreCaso);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener los casos de la bitácora", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private String obtenerNombreCaso(int idCaso) {
+        String nombreCaso = null;
+        try (Connection connection = Conexion.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("SELECT NombreCaso FROM caso WHERE Id = ?")) {
+            pstmt.setInt(1, idCaso);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                nombreCaso = resultSet.getString("NombreCaso");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener el nombre del caso", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+        return nombreCaso;
+    }
+
+    private void mostrarBitacora() {
+        String nombreCasoSeleccionado = cmbProgreso.getSelectedItem().toString();
+        int idCasoSeleccionado = obtenerIdCasoSeleccionado(nombreCasoSeleccionado);
+        if (idCasoSeleccionado == -1) {
+            JOptionPane.showMessageDialog(null, "No se pudo obtener el Id del caso seleccionado", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try (Connection connection = Conexion.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT progreso FROM bitacora WHERE IdCaso = ?")) {
+            statement.setInt(1, idCasoSeleccionado);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                int progreso = resultSet.getInt("progreso");
+                progressBar.setValue(progreso);
+            } else {
+                JOptionPane.showMessageDialog(null, "No se encontró progreso para el caso seleccionado", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener el progreso de la bitácora", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private int obtenerIdCasoSeleccionado(String nombreCasoSeleccionado) {
+        int idCasoSeleccionado = -1;
+        try (Connection connection = Conexion.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement("SELECT Id FROM caso WHERE NombreCaso = ?")) {
+            pstmt.setString(1, nombreCasoSeleccionado);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                idCasoSeleccionado = resultSet.getInt("Id");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener el Id del caso seleccionado", "Warning", JOptionPane.WARNING_MESSAGE);
+        }
+        return idCasoSeleccionado;
+    }
+
+
+
+
+            public static void main(String[] args){
         JFrame frame = new SolicitudCasos("panel");
         frame.setVisible(true);
     }
