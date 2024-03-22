@@ -2,6 +2,7 @@ package sv.edu.udb.sistemas.Administrador;
 import sv.edu.udb.sistemas.Empleado;
 import sv.edu.udb.sistemas.Login;
 import sv.edu.udb.sistemas.Programador.programador.Programador;
+
 import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
@@ -29,8 +30,8 @@ public class menuAdmin extends JFrame {
     private JTextField textField2;
     private JTextField textField3;
     private JPasswordField pwdEmpl;
-    private JComboBox comboBox1;
-    private JComboBox comboBox2;
+    private JComboBox<String> cmbDepartamentoEmpl;
+    private JComboBox<String> cmbCargoEmpl;
     private JButton btnEnviarEmpl;
     private JButton btnEditarEmpl;
     private JButton btnEliminarEmpl;
@@ -302,6 +303,8 @@ public class menuAdmin extends JFrame {
 
         // Empleado
         mostrarDatosEmpleados();
+        obtenerDepartamentos();
+        obtenerCargos();
 
         // Jefe de Desarrollo
         mostrarDatosJefesDesarrollo();
@@ -404,6 +407,7 @@ public class menuAdmin extends JFrame {
     }
 
     private void mostrarDatosEmpleados(){
+        modelEmpleado.setRowCount(0);
 
     }
 
@@ -468,6 +472,44 @@ public class menuAdmin extends JFrame {
             JOptionPane.showMessageDialog(null, "Error al cargar la tabla de Programadores: " + ex.getMessage());
         }
     }
+
+    // cmb de Departamentos en seccion de Empleado(Admin)
+    private void obtenerDepartamentos(){
+        try{
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT NombreDepartamento FROM departamentos");
+            while(resultSet.next()){
+                cmbDepartamentoEmpl.addItem(resultSet.getString("NombreDepartamento"));
+            }
+            resultSet.close();
+            statement.close();
+
+        } catch (SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error al obtener los departamentos","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    // cmb de Cargos en seccion de Empleado(Admin)
+    private void obtenerCargos(){
+        try{
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT Cargo FROM cargos WHERE id >= 2");
+
+            while(resultSet.next()){
+                cmbCargoEmpl.addItem(resultSet.getString("Cargo"));
+            }
+            resultSet.close();
+            statement.close();
+        } catch (SQLException ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error al obtener los cargos","Warning",JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+
 
 
     public static void main(String[] args) {
