@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.plaf.nimbus.State;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -50,9 +51,6 @@ public class menuAdmin extends JFrame {
     private JButton btnProgramador;
     private JLabel lblJA;
     private JPanel lblJA1;
-    private JButton btnAgregarProg;
-    private JButton btnEditarProg;
-    private JButton btnEliminarProg;
     private JLabel lblDepartamento;
     private JTextField txtDepartamentoNomb;
     private JTextField txtDepartamentoSec;
@@ -63,9 +61,6 @@ public class menuAdmin extends JFrame {
     private JButton btnCerrarSesionRol;
     private JLabel lblTituloJefeDesarrollo;
     private JTable tblJefeDesarrollo;
-    private JButton btnAgregarJefeDesarrollo;
-    private JButton btnEditarJefeDesarrollo;
-    private JButton btnEliminarJefeDesarrollo;
 
     private JButton btnBorrarDep;
 
@@ -110,13 +105,13 @@ public class menuAdmin extends JFrame {
         tblEmpl.setModel(modelEmpleado);
 
         // Tabla Programadores
-        columnaProgramadores = new String[]{"ID", "Nombre", "Apellido", "Clave", "Cargo"};
+        columnaProgramadores = new String[]{"ID", "Nombre", "Apellido", "NombreUsuario" , "Clave", "Cargo"};
         datosProgramador = new Object[][]{};
         modeloPogramadores = new DefaultTableModel(datosProgramador, columnaProgramadores);
         tblProgramadores.setModel(modeloPogramadores);
 
         // Tabla Jefe de Desarrollo
-        columnaJefeDesarrollo = new String[]{"ID", "Nombre", "Apellido", "Clave", "Cargo"};
+        columnaJefeDesarrollo = new String[]{"ID", "Nombre", "Apellido", "NombreUsuario" , "Clave", "Cargo"};
         datosJefeDesarrollo = new Object[][]{};
         modeloJefeDesarrollo = new DefaultTableModel(datosJefeDesarrollo, columnaJefeDesarrollo);
         tblJefeDesarrollo.setModel(modeloJefeDesarrollo);
@@ -199,7 +194,7 @@ public class menuAdmin extends JFrame {
                 modeloDepartamento.addRow(new Object[]{id, nombreDepartamento, seccion});
             }
 
-            tblDepartamento.setModel(modeloDepartamento); // Asignar el modelo de tabla a la tabla
+            tblDepartamento.setModel(modeloDepartamento);
 
         } catch (SQLException e) {
             System.err.println("Error al conectar a la base de datos: " + e.getMessage());
@@ -218,12 +213,12 @@ public class menuAdmin extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
                     int selectedRow = tblDepartamento.getSelectedRow();
-                    if (selectedRow != -1) { // Verificar si se ha seleccionado una fila
+                    if (selectedRow != -1) {
                         String id = tblDepartamento.getValueAt(selectedRow, 0).toString();
                         String nombreDepartamento = tblDepartamento.getValueAt(selectedRow, 1).toString();
                         String seccion = tblDepartamento.getValueAt(selectedRow, 2).toString();
 
-                        // Establecer los valores en las cajas de texto
+
                         txtDepartamentoId.setText(id);
                         txtDepartamentoNomb.setText(nombreDepartamento);
                         txtDepartamentoSec.setText(seccion);
@@ -240,9 +235,9 @@ public class menuAdmin extends JFrame {
 
                 int selectedRow = tblDepartamento.getSelectedRow();
                 if (selectedRow == -1) {
-                    // Si no se ha seleccionado ninguna fila
+
                     JOptionPane.showMessageDialog(null, "Seleccione un departamento para editar", "Error", JOptionPane.ERROR_MESSAGE);
-                    return; // Salir del método porque no hay nada que editar
+                    return;
                 }
 
                 String id = txtDepartamentoId.getText();
@@ -255,12 +250,12 @@ public class menuAdmin extends JFrame {
                     return; // Salir del método porque falta información
                 }
 
-                // Actualizar fila seleccionada en la tabla
+
                 tblDepartamento.setValueAt(id, selectedRow, 0);
                 tblDepartamento.setValueAt(nombre, selectedRow, 1);
                 tblDepartamento.setValueAt(seccion, selectedRow, 2);
 
-                // Query para actualizar la BD
+
                 String updateQuery = "UPDATE departamentos SET NombreDepartamento = '" + nombre + "', Seccion = '" + seccion + "' WHERE Id = " + id;
                 executeUpdateQuery(updateQuery);
 
@@ -295,11 +290,10 @@ public class menuAdmin extends JFrame {
 
             }
         });
-
-
-
-
         /* Termina lógica departamentos */
+
+        // Jefe de Desarrollo
+        mostrarDatosJefesDesarrollo();
 
         //Logica de JefeAreaFuncional
         mostrarDatosCaso();
@@ -334,6 +328,9 @@ public class menuAdmin extends JFrame {
                 }
             }
         });
+
+        // Programdor
+        mostrarDatosProgramador();
     }
 
 
@@ -358,6 +355,36 @@ public class menuAdmin extends JFrame {
         }
     }
 
+    private void mostrarDatosJefesDesarrollo(){
+        modeloJefeDesarrollo.setRowCount(0);
+        try{
+           connection = DriverManager.getConnection(URL,USER,PASSWORD);
+            String query = "SELECT * FROM empleados WHERE IdCargo = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1,2);
+
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while(resultSet.next()){
+                String id = resultSet.getString("Id");
+                String nombre = resultSet.getString("Nombre");
+                String apellido = resultSet.getString("Apellido");
+                String nombreUsuario = resultSet.getString("NombreUsuario");
+                String clave = resultSet.getString("Contrasenia");
+                String cargo = resultSet.getString("IdCargo");
+
+                modeloJefeDesarrollo.addRow(new Object[]{id, nombre, apellido, nombreUsuario, clave, cargo});
+            }
+            resultSet.close();
+            pstmt.close();
+            connection.close();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla de Jefes de Desarrollo: " + ex.getMessage());
+        }
+    }
+
     private void mostrarDatosCaso(){
         modeloAF.setRowCount(0);
         try {
@@ -374,6 +401,38 @@ public class menuAdmin extends JFrame {
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al cargar la tabla de casos" + ex.getMessage());
+        }
+    }
+
+    private void mostrarDatosProgramador(){
+        modeloPogramadores.setRowCount(0);
+        try {
+
+            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            String query = "SELECT * FROM empleados WHERE IdCargo = ?";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            pstmt.setInt(1, 5);
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("ID");
+                String nombre = resultSet.getString("Nombre");
+                String apellido = resultSet.getString("Apellido");
+                String clave = resultSet.getString("Contrasenia");
+                String nombreUsuario = resultSet.getString("NombreUsuario");
+                String cargo = resultSet.getString("IdCargo");
+
+
+                modeloPogramadores.addRow(new Object[]{id, nombre, apellido, nombreUsuario, clave, cargo});
+            }
+
+            resultSet.close();
+            pstmt.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al cargar la tabla de Programadores: " + ex.getMessage());
         }
     }
 
