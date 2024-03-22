@@ -1,7 +1,6 @@
 package sv.edu.udb.sistemas.Administrador;
 import sv.edu.udb.sistemas.Empleado;
 import sv.edu.udb.sistemas.Login;
-import sv.edu.udb.sistemas.Programador.programador.Programador;
 
 import javax.swing.JFrame;
 import javax.swing.*;
@@ -26,9 +25,9 @@ public class menuAdmin extends JFrame {
     private JTabbedPane tabbedPaneAdmin;
     private JLabel lblTituloProgramador;
     private JTable tblProgramadores;
-    private JTextField textField1;
-    private JTextField textField2;
-    private JTextField textField3;
+    private JTextField txtNombreEmpl;
+    private JTextField txtApellidoEmpl;
+    private JTextField txtUsuarioEmpl;
     private JPasswordField pwdEmpl;
     private JComboBox<String> cmbDepartamentoEmpl;
     private JComboBox<String> cmbCargoEmpl;
@@ -88,11 +87,14 @@ public class menuAdmin extends JFrame {
     private static final String URL = "jdbc:mysql://localhost:3306/sistema_caso";
     private static final String USER = "root";
     private static final String PASSWORD = "";
-    private Connection connection;
+    private Connection connection =  null;
 
     private DefaultTableModel tableModel;
 
     private Empleado empleado;
+
+
+
 
     public menuAdmin(String title, Empleado empleado) {
         super(title);
@@ -191,7 +193,7 @@ public class menuAdmin extends JFrame {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-         //   System.out.println("Conexión exitosa");
+            //   System.out.println("Conexión exitosa");
 
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM departamentos");
@@ -216,6 +218,7 @@ public class menuAdmin extends JFrame {
                 }
             }
         }
+
 
         tblDepartamento.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -303,8 +306,205 @@ public class menuAdmin extends JFrame {
 
         // Empleado
         mostrarDatosEmpleados();
-        obtenerDepartamentos();
-        obtenerCargos();
+        obtenerIdDepartamento();
+        obtenerIdCargo();
+        btnEnviarEmpl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nombre = txtNombreEmpl.getText();
+                String apellido = txtApellidoEmpl.getText();
+                String usuario = txtUsuarioEmpl.getText();
+                String clave = new String(pwdEmpl.getPassword());
+                String departamento = cmbDepartamentoEmpl.getSelectedItem().toString();
+                String cargo = cmbCargoEmpl.getSelectedItem().toString();
+
+                // Verificar que los campos no estén vacíos
+                if (nombre.isEmpty() || apellido.isEmpty() || usuario.isEmpty() || clave.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Todos los campos deben estar llenos", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Obtener el ID del departamento seleccionado
+                int IdDepartamentoPerteneciente = obtenerIdDepartamento(departamento);
+
+                // Si se obtiene un ID válido, proceder con la inserción del empleado
+                if (IdDepartamentoPerteneciente != -1) {
+                    // Query para insertar el nuevo empleado en la base de datos
+                    String insertQuery = "INSERT INTO empleados (Nombre, Apellido, NombreUsuario, Contrasenia, IdDepartamentoPerteneciente, IdCargo) VALUES (?, ?, ?, ?, ?, ?)";
+                    try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                         PreparedStatement pstmt = connection.prepareStatement(insertQuery)) {
+                        pstmt.setString(1, nombre);
+                        pstmt.setString(2, apellido);
+                        pstmt.setString(3, usuario);
+                        pstmt.setString(4, clave);
+                        pstmt.setInt(5, IdDepartamentoPerteneciente);
+                        pstmt.setInt(6, obtenerIdCargo(cargo)); // Obtener directamente el ID del cargo seleccionado
+
+                        // Ejecutar la consulta de inserción
+                        int rowsAffected = pstmt.executeUpdate();
+                        if (rowsAffected > 0) {
+                            // Limpiar los campos después de la inserción exitosa
+                            limpiarCamposEmpleado();
+                            // Actualizar la tabla de empleados para reflejar el nuevo empleado
+                            mostrarDatosEmpleados();
+                            JOptionPane.showMessageDialog(null, "Empleado agregado exitosamente");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No se pudo agregar el empleado", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al agregar el empleado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se pudo obtener el ID del departamento seleccionado", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        tblEmpl.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                // Obtener el modelo de la tabla
+                DefaultTableModel model = (DefaultTableModel) tblEmpl.getModel();
+
+                // Obtener la fila seleccionada
+                int selectedRow = tblEmpl.getSelectedRow();
+
+                // Verificar si se ha seleccionado una fila
+                if (selectedRow != -1) {
+                    // Obtener los datos de la fila seleccionada
+                    String nombre = model.getValueAt(selectedRow, 0).toString();
+                    String apellido = model.getValueAt(selectedRow, 1).toString();
+                    String usuario = model.getValueAt(selectedRow, 2).toString();
+                    String passwordPlaceholder = "*********"; // Placeholder para la contraseña
+
+                    // Asignar los datos a los campos correspondientes
+                    txtNombreEmpl.setText(nombre);
+                    txtApellidoEmpl.setText(apellido);
+                    txtUsuarioEmpl.setText(usuario);
+
+                    // Establecer el contenido del campo de contraseña
+                    pwdEmpl.setText(passwordPlaceholder);
+                    pwdEmpl.setEchoChar((char) 0);
+
+                    // Si los datos de departamento y cargo están almacenados en la tabla, también puedes asignarlos aquí
+                    // Solo asegúrate de que los valores correspondientes se encuentren en las columnas correctas
+                }
+            }
+        });
+
+        btnEditarEmpl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel model = (DefaultTableModel) tblEmpl.getModel();
+
+                // Obtener la fila seleccionada
+                int selectedRow = tblEmpl.getSelectedRow();
+
+                // Verificar si se ha seleccionado una fila
+                if (selectedRow != -1) {
+                    // Obtener los datos de los campos de texto
+                    String nombre = txtNombreEmpl.getText();
+                    String apellido = txtApellidoEmpl.getText();
+                    String usuario = txtUsuarioEmpl.getText();
+                    String clave = new String(pwdEmpl.getPassword()); // Se recomienda no almacenar la contraseña en texto plano en un campo de texto
+
+                    // Verificar si los campos obligatorios están llenos
+                    if (nombre.isEmpty() || apellido.isEmpty() || usuario.isEmpty() || clave.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Todos los campos deben estar llenos", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Obtener el ID del departamento seleccionado
+                    String departamento = cmbDepartamentoEmpl.getSelectedItem().toString();
+                    int idDepartamento = obtenerIdDepartamento(departamento);
+
+                    // Obtener el ID del cargo seleccionado
+                    String cargo = cmbCargoEmpl.getSelectedItem().toString();
+                    int idCargo = obtenerIdCargo(cargo);
+
+                    // Verificar si se pudo obtener el ID del departamento y el ID del cargo
+                    if (idDepartamento == -1 || idCargo == -1) {
+                        JOptionPane.showMessageDialog(null, "No se pudo obtener el ID del departamento o del cargo seleccionado", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Actualizar los datos en la tabla
+                    model.setValueAt(nombre, selectedRow, 0);
+                    model.setValueAt(apellido, selectedRow, 1);
+                    model.setValueAt(usuario, selectedRow, 2);
+                    // No se actualiza la contraseña en la tabla por razones de seguridad
+                    // model.setValueAt(clave, selectedRow, 3);
+                    //  model.setValueAt(departamento, selectedRow, departamentoColumnIndex);
+                    //       model.setValueAt(cargo, selectedRow, cargoColumnIndex);
+
+                    // Guardar los cambios en la base de datos
+                    String updateQuery = "UPDATE empleados SET Nombre=?, Apellido=?, NombreUsuario=?, IdDepartamentoPerteneciente=?, IdCargo=? WHERE Nombre=? AND Apellido=? AND NombreUsuario=?";
+                    try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                         PreparedStatement pstmt = connection.prepareStatement(updateQuery)) {
+                        pstmt.setString(1, nombre);
+                        pstmt.setString(2, apellido);
+                        pstmt.setString(3, usuario);
+                        pstmt.setInt(4, idDepartamento);
+                        pstmt.setInt(5, idCargo);
+                        pstmt.setString(6, nombre);
+                        pstmt.setString(7, apellido);
+                        pstmt.setString(8, usuario);
+
+                        int rowsAffected = pstmt.executeUpdate();
+                        if (rowsAffected > 0) {
+                            JOptionPane.showMessageDialog(null, "Empleado actualizado exitosamente");
+                        }
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "Error al actualizar el empleado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Seleccione un empleado para editar", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnEliminarEmpl.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel model = (DefaultTableModel) tblEmpl.getModel();
+
+                // Obtener la fila seleccionada
+                int selectedRow = tblEmpl.getSelectedRow();
+
+                // Verificar si se ha seleccionado una fila
+                if (selectedRow != -1) {
+                    // Obtener el nombre de usuario del empleado seleccionado
+                    String nombreUsuario = model.getValueAt(selectedRow, 2).toString();
+
+                    // Confirmar con el usuario si realmente desea eliminar el empleado
+                    int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar al empleado con nombre de usuario '" + nombreUsuario + "'?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+                    if (confirmacion == JOptionPane.YES_OPTION) {
+                        // Realizar la eliminación en la base de datos
+                        String deleteQuery = "DELETE FROM empleados WHERE NombreUsuario=?";
+                        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                             PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
+                            pstmt.setString(1, nombreUsuario);
+
+                            int rowsAffected = pstmt.executeUpdate();
+                            if (rowsAffected > 0) {
+                                // Eliminar la fila de la tabla
+                                model.removeRow(selectedRow);
+                                JOptionPane.showMessageDialog(null, "Empleado eliminado exitosamente");
+                            }
+                        } catch (SQLException ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null, "Error al eliminar el empleado: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "Seleccione un empleado para eliminar", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
 
         // Jefe de Desarrollo
         mostrarDatosJefesDesarrollo();
@@ -406,11 +606,77 @@ public class menuAdmin extends JFrame {
 
     }
 
-    private void mostrarDatosEmpleados(){
-        modelEmpleado.setRowCount(0);
+    private void mostrarDatosEmpleados() {
+        modelEmpleado.setRowCount(0); // Limpiar la tabla antes de agregar nuevos datos
 
+        try {
+            // Establecer la conexión con la base de datos
+            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+
+            // Consulta SQL para obtener los datos de los empleados
+            String query = "SELECT Nombre, Apellido, NombreUsuario, Contrasenia, IdDepartamentoPerteneciente, IdCargo FROM empleados";
+
+            // Crear una declaración SQL
+            Statement statement = connection.createStatement();
+
+            // Ejecutar la consulta y obtener el resultado
+            ResultSet resultSet = statement.executeQuery(query);
+
+            // Iterar sobre el resultado y agregar cada empleado a la tabla
+            while (resultSet.next()) {
+                String nombre = resultSet.getString("Nombre");
+                String apellido = resultSet.getString("Apellido");
+                String usuario = resultSet.getString("NombreUsuario");
+                String contrasenia = resultSet.getString("Contrasenia");
+                int idDepartamento = resultSet.getInt("IdDepartamentoPerteneciente");
+                int idCargo = resultSet.getInt("IdCargo");
+
+                // Agregar una nueva fila a la tabla con los datos del empleado
+                modelEmpleado.addRow(new Object[]{nombre, apellido, usuario, contrasenia, idDepartamento, idCargo});
+            }
+
+            // Cerrar la conexión y liberar recursos
+            resultSet.close();
+            statement.close();
+            connection.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al mostrar los empleados: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
+    private int obtenerIdDepartamento(String nombreDepartamento) {
+        int idDepartamento = -1;
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement("SELECT Id FROM departamentos WHERE NombreDepartamento = ?")) {
+            pstmt.setString(1, nombreDepartamento);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                idDepartamento = resultSet.getInt("Id");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID del departamento: " + ex.getMessage());
+        }
+        return idDepartamento;
+    }
+
+    // Método para obtener el ID del cargo seleccionado
+    private int obtenerIdCargo(String nombreCargo) {
+        int idCargo = -1;
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
+             PreparedStatement pstmt = connection.prepareStatement("SELECT Id FROM cargos WHERE Cargo = ?")) {
+            pstmt.setString(1, nombreCargo);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                idCargo = resultSet.getInt("Id");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al obtener el ID del cargo: " + ex.getMessage());
+        }
+        return idCargo;
+    }
     private void mostrarDatosJefesDesarrollo(){
         modeloJefeDesarrollo.setRowCount(0);
         try{
@@ -474,9 +740,18 @@ public class menuAdmin extends JFrame {
     }
 
     // cmb de Departamentos en seccion de Empleado(Admin)
-    private void obtenerDepartamentos(){
+    // Método para limpiar los campos del empleado después de la inserción exitosa
+    private void limpiarCamposEmpleado() {
+        txtNombreEmpl.setText("");
+        txtApellidoEmpl.setText("");
+        txtUsuarioEmpl.setText("");
+        pwdEmpl.setText("");
+    }
+
+    // Método para obtener el ID del departamento seleccionado
+    private void obtenerIdDepartamento() {
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
+            //connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT NombreDepartamento FROM departamentos");
             while(resultSet.next()){
@@ -491,10 +766,10 @@ public class menuAdmin extends JFrame {
         }
     }
 
-    // cmb de Cargos en seccion de Empleado(Admin)
-    private void obtenerCargos(){
+    // Método para obtener el ID del cargo seleccionado
+    private void obtenerIdCargo() {
         try{
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
+            //connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistema_caso", "root", "");
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT Cargo FROM cargos WHERE id >= 2");
 
@@ -509,12 +784,8 @@ public class menuAdmin extends JFrame {
         }
     }
 
-
-
-
     public static void main(String[] args) {
         Empleado empleado = new Empleado();
         menuAdmin adminner = new menuAdmin("Panel Administradir", empleado);
-        adminner.setVisible(true);
-    }
+        adminner.setVisible(true);}
 }
