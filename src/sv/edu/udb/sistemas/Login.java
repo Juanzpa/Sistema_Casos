@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import sv.edu.udb.sistemas.Administrador.menuAdmin;
 import sv.edu.udb.sistemas.EmpleadoAreaFuncional.EmpleadoProbador;
 
 public class Login extends JFrame {
@@ -98,12 +100,11 @@ public class Login extends JFrame {
     // Método para crear objeto para cargo Administrador y llamar a los métodos correspondientes
     private void crearObjetoAdministrador(Empleado empleado) {
         // Crear objeto para cargo Administrador con los datos del empleado
-        Administrador administrador = new Administrador(empleado);
-        // Llamar a los métodos randoms del cargo Administrador
-        administrador.metodoRandomAdministrador();
-        // Mostrar mensaje de confirmación
-        JOptionPane.showMessageDialog(Login.this, "Se ha creado un objeto Administrador correctamente", "Objeto Creado", JOptionPane.INFORMATION_MESSAGE);
-    }
+        menuAdmin administrador = new menuAdmin(empleado);
+        menuAdmin adminner = new menuAdmin("Panel Administradir", empleado);
+        adminner.setVisible(true);
+        dispose();
+          }
 
     // Método para crear objeto para cargo Jefe de desarrollo y llamar a los métodos correspondientes
     private void crearObjetoJefeDesarrollo(Empleado empleado) {
@@ -145,81 +146,15 @@ public class Login extends JFrame {
         // Crear objeto para cargo Programador con los datos del empleado
         Programador programador = new Programador(empleado);
         // Llamar a los métodos randoms del cargo Programador
-        programador.metodoRandomProgramador();
         // Mostrar mensaje de confirmación
-        JOptionPane.showMessageDialog(Login.this, "Se ha creado un objeto Programador correctamente", "Objeto Creado", JOptionPane.INFORMATION_MESSAGE);
+        sv.edu.udb.sistemas.Programador.programador.Programador programmer = new sv.edu.udb.sistemas.Programador.programador.Programador("Programador", empleado);
+        programmer.setVisible(true);
+        dispose();
     }
 
-    // Clase Empleado
-    private class Empleado {
-        private int id;
-        private String nombre;
-        private String apellido;
-        private String nombreUsuario;
-        private int idDepartamentoAsignado;
-        private int idCargo;
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getNombre() {
-            return nombre;
-        }
-
-        public void setNombre(String nombre) {
-            this.nombre = nombre;
-        }
-
-        public String getApellido() {
-            return apellido;
-        }
-
-        public void setApellido(String apellido) {
-            this.apellido = apellido;
-        }
-
-        public String getNombreUsuario() {
-            return nombreUsuario;
-        }
-
-        public void setNombreUsuario(String nombreUsuario) {
-            this.nombreUsuario = nombreUsuario;
-        }
-
-        public int getIdDepartamentoAsignado() {
-            return idDepartamentoAsignado;
-        }
-
-        public void setIdDepartamentoAsignado(int idDepartamentoAsignado) {
-            this.idDepartamentoAsignado = idDepartamentoAsignado;
-        }
-
-        public int getIdCargo() {
-            return idCargo;
-        }
-
-        public void setIdCargo(int idCargo) {
-            this.idCargo = idCargo;
-        }
-    }
 
     // Clase para representar Administrador
-    public class Administrador {
-        private Empleado empleado;
 
-        public Administrador(Empleado empleado) {
-            this.empleado = empleado;
-        }
-
-        // Método random para Administrador
-        public void metodoRandomAdministrador() {
-            // Implementación para Administrador
-        }
-    }
 
     // Clase para representar Jefe de Desarrollo
     public class JefeDesarrollo {
@@ -286,12 +221,7 @@ public class Login extends JFrame {
         private Empleado empleado;
 
         public Programador(Empleado empleado) {
-            this.empleado = empleado;
-        }
 
-        // Método random para Programador
-        public void metodoRandomProgramador() {
-            // Implementación para Programador
         }
     }
 

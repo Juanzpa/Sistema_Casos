@@ -1,4 +1,8 @@
 package sv.edu.udb.sistemas.Administrador;
+import sv.edu.udb.sistemas.Empleado;
+import sv.edu.udb.sistemas.Login;
+import sv.edu.udb.sistemas.Programador.programador.Programador;
+import javax.swing.JFrame;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.event.ListSelectionEvent;
@@ -90,7 +94,9 @@ public class menuAdmin extends JFrame {
 
     private DefaultTableModel tableModel;
 
-    public menuAdmin(String title) {
+    private Empleado empleado;
+
+    public menuAdmin(String title, Empleado empleado) {
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(pnlmenuadmin);
@@ -334,6 +340,20 @@ public class menuAdmin extends JFrame {
                 }
             }
         });
+        btnCerrarSesionRol.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+
+                // Abre la ventana de inicio de sesión
+                Empleado empleado = new Empleado();
+                Login login = new Login("Inicio de Sesión");
+                login.setVisible(true);
+            }
+        });
+    }
+
+    public menuAdmin(Empleado empleado) {
     }
 
 
@@ -375,10 +395,12 @@ public class menuAdmin extends JFrame {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(null, "Error al cargar la tabla de casos" + ex.getMessage());
         }
+
     }
 
     public static void main(String[] args) {
-        JFrame frama = new menuAdmin("Panel del Administrador");
-    frama.setVisible(true);
+        Empleado empleado = new Empleado();
+        menuAdmin adminner = new menuAdmin("Panel Administradir", empleado);
+        adminner.setVisible(true);
     }
 }

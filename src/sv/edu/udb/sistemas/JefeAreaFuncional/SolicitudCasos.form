@@ -87,6 +87,14 @@
                 </constraints>
                 <properties/>
               </component>
+              <component id="48490" class="javax.swing.JButton" binding="cerrarSesionButton" default-binding="true">
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <text value="Cerrar Sesion"/>
+                </properties>
+              </component>
             </children>
           </grid>
           <grid id="f1b09" layout-manager="GridLayoutManager" row-count="10" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

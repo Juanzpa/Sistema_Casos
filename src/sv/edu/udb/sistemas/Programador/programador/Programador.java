@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import sv.edu.udb.sistemas.Empleado;
+import sv.edu.udb.sistemas.Login;
 import sv.edu.udb.sistemas.Programador.casos_programador.Casos_Programador;
 
 public class Programador extends JFrame {
@@ -18,8 +20,8 @@ public class Programador extends JFrame {
     private JPanel pnlCasos;
     private JButton btnCerrarSesionProg;
     private JButton btnCerrarSesionProgramador;
-
-    public Programador(String title){
+    private Empleado empleado;
+    public Programador(String title, Empleado empleado){
         super(title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(pnlProgramador);
@@ -32,7 +34,13 @@ public class Programador extends JFrame {
         btnCerrarSesionProg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                // Cierra la ventana actual del programador
+                dispose();
+
+                // Abre la ventana de inicio de sesión
+                Empleado empleado = new Empleado();
+                Login login = new Login("Inicio de Sesión");
+                login.setVisible(true);
             }
         });
     }
@@ -75,12 +83,16 @@ public class Programador extends JFrame {
         }
     }
 
-
+    public void metodoRandomProgramador() {
+        // Implementación para Programador
+    }
     public static void main(String[] args) {
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Programador programmer = new Programador("Programador");
+                Empleado empleado = new Empleado();
+                Programador programmer = new Programador("Programador", empleado);
                 programmer.cargarCasosDesdeBaseDeDatos();
             }
         });

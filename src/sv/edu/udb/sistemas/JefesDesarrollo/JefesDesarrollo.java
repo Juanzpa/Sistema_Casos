@@ -1,6 +1,8 @@
 package sv.edu.udb.sistemas.JefesDesarrollo;
 
 import com.mysql.cj.log.NullLogger;
+import sv.edu.udb.sistemas.Empleado;
+import sv.edu.udb.sistemas.Login;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -91,6 +93,17 @@ public class JefesDesarrollo extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
+            }
+        });
+        btnCerrarSesion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+
+                // Abre la ventana de inicio de sesión
+                Empleado empleado = new Empleado();
+                Login login = new Login("Inicio de Sesión");
+                login.setVisible(true);
             }
         });
     }

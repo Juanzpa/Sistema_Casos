@@ -1,8 +1,12 @@
 package sv.edu.udb.sistemas.JefeAreaFuncional;
 
 import sv.edu.udb.sistemas.Conexion;
+import sv.edu.udb.sistemas.Empleado;
+import sv.edu.udb.sistemas.Login;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,6 +22,7 @@ public class SolicitudCasos extends JFrame{
     private JProgressBar progressBar1;
     private JComboBox comboBox2;
     private JTextField textField2;
+    private JButton cerrarSesionButton;
 
     public SolicitudCasos(String panel) {
         super(panel);
@@ -49,6 +54,17 @@ public class SolicitudCasos extends JFrame{
             String nombreCaso = textField1.getText(); // Obtener el nombre del caso
             String descripcion = textField2.getText(); // Obtener la descripción del caso
             guardarCasos(nombreCaso, idDepartamentoAsignado, descripcion);
+        });
+        cerrarSesionButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+
+                // Abre la ventana de inicio de sesión
+                Empleado empleado = new Empleado();
+                Login login = new Login("Inicio de Sesión");
+                login.setVisible(true);
+            }
         });
     }
 
